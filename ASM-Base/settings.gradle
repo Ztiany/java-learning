@@ -1,0 +1,10 @@
+rootProject.name = 'ASM-Base'
+
+//agent api
+include 'JDK5AgentLib'
+include 'JavaAgentTest'
+
+//asm
+include 'AsmAgent'
+include 'AsmAgent-Main'
+

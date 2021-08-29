@@ -1,0 +1,7 @@
+group 'com.ztiany'
+version '1.0'
+
+dependencies{
+    //https://openjdk.java.net/projects/code-tools/jol/
+    compile 'org.openjdk.jol:jol-core:0.16'
+}
