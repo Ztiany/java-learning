@@ -8,7 +8,7 @@ buildscript {
         maven { url 'https://dl.google.com/dl/android/maven2/' }
         maven { url 'https://jitpack.io' }
         maven { url "https://kotlin.bintray.com/kotlinx" }
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -46,7 +46,7 @@ repositories {
     maven { url 'https://dl.google.com/dl/android/maven2/' }
     maven { url 'https://jitpack.io' }
     maven { url "https://kotlin.bintray.com/kotlinx" }
-    jcenter()
+    mavenCentral()
     google()
     //arrow
     maven { url "https://dl.bintray.com/arrow-kt/arrow-kt/" }
@@ -78,7 +78,6 @@ dependencies {
 
     //kotlin
     compile("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.kotlin_version}")
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${rootProject.kotlin_version}"
     compile("org.jetbrains.kotlin:kotlin-reflect")
     compile "org.jetbrains.kotlin:kotlin-script-runtime:${rootProject.kotlin_version}"
     //kotlin coroutines
@@ -113,7 +112,7 @@ dependencies {
     //https://github.com/enbandari/ReleasableVar
     compile "com.bennyhuo.kotlin:releasable-nonnull-vars:1.1.0"
     //https://github.com/enbandari/PortableAndroidHandler
-    compile "com.bennyhuo.java:portable-android-handler:0.3"
+    //compile "com.bennyhuo.java:portable-android-handler:0.3"
 
     //retrofit with coroutine
     compile "com.squareup.retrofit2:retrofit:${retrofit_version}"
