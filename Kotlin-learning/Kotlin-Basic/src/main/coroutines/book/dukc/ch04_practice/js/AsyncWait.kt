@@ -1,7 +1,7 @@
 package book.dukc.ch04_practice.js
 
-import android.os.Handler
-import android.os.Looper
+//import android.os.Handler
+//import android.os.Looper
 import book.dukc.common.dispatcher.Dispatcher
 import book.dukc.common.dispatcher.DispatcherContext
 import book.dukc.common.api.githubApi
@@ -45,13 +45,13 @@ class AsyncCoroutine(override val context: CoroutineContext = EmptyCoroutineCont
 }
 
 fun main() {
-    Looper.prepare()
+//    Looper.prepare()
     val handlerDispatcher =
             DispatcherContext(object :
                     Dispatcher {
-                val handler = Handler()
+//                val handler = Handler()
                 override fun dispatch(block: () -> Unit) {
-                    handler.post(block)
+//                    handler.post(block)
                 }
             })
 
@@ -60,5 +60,5 @@ fun main() {
         println(user)
     }
 
-    Looper.loop()
+//    Looper.loop()
 }
