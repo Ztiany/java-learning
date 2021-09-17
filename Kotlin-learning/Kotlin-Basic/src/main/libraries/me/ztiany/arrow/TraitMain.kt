@@ -32,8 +32,7 @@ object Bar : WithDescription
 fun <T : WithDescription> T.printDescription() = println(description)
 
 /*
-3 在 Kotlin 中不能给既有类型（类或接口）实现新的接口，比如不能为 Boolean 或者 Iterable 实现 WithDescription。
-即接口不具备第三项能力，因此它不是 trait/类型类。
+3 在 Kotlin 中不能给既有类型（类或接口）实现新的接口，比如不能为 Boolean 或者 Iterable 实现 WithDescription。即接口不具备第三项能力，因此它不是 trait/类型类。
  */
 
 /*

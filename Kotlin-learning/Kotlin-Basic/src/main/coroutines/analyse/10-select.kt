@@ -37,14 +37,14 @@ fun main() = runBlocking {
 }
 
 
-class Response<T>(val value: T, val isLocal: Boolean)
+private class Response<T>(val value: T, val isLocal: Boolean)
 
-fun CoroutineScope.getUserFromApi(login: String = "") = async(Dispatchers.IO) {
+private fun CoroutineScope.getUserFromApi(login: String = "") = async(Dispatchers.IO) {
     delay(3000)
     "Data From API"
 }
 
-fun CoroutineScope.getUserFromLocal(login: String = "") = async(Dispatchers.IO) {
+private fun CoroutineScope.getUserFromLocal(login: String = "") = async(Dispatchers.IO) {
     delay(1000)
     "Data From Local"
 }

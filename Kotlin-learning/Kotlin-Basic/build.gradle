@@ -3,12 +3,12 @@ buildscript {
     ext.kotlin_version = '1.5.0'
 
     repositories {
+        mavenCentral()
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         maven { url "https://maven.aliyun.com/repository/google" }
         maven { url 'https://dl.google.com/dl/android/maven2/' }
         maven { url 'https://jitpack.io' }
         maven { url "https://kotlin.bintray.com/kotlinx" }
-        mavenCentral()
     }
 
     dependencies {
@@ -42,15 +42,11 @@ apply plugin: 'kotlin-kapt'
 }*/
 
 repositories {
+    mavenCentral()
     maven { url "https://maven.aliyun.com/repository/google" }
     maven { url 'https://dl.google.com/dl/android/maven2/' }
     maven { url 'https://jitpack.io' }
     maven { url "https://kotlin.bintray.com/kotlinx" }
-    mavenCentral()
-    google()
-    //arrow
-    maven { url "https://dl.bintray.com/arrow-kt/arrow-kt/" }
-    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' } // for SNAPSHOT builds
 }
 
 sourceSets {
@@ -75,7 +71,7 @@ sourceSets {
 dependencies {
 
     def coroutines_version = '1.5.0-RC'
-    def arrow_version = "0.11.0"
+    def arrow_version = "0.13.2"
     def retrofit_version = "2.9.0"
 
     //kotlin
@@ -129,8 +125,8 @@ dependencies {
 
     //arrow
     compile "io.arrow-kt:arrow-core:${arrow_version}"
-    compile "io.arrow-kt:arrow-syntax:${arrow_version}"
-    kapt "io.arrow-kt:arrow-meta:${arrow_version}"
+    //compile "io.arrow-kt:arrow-syntax:${arrow_version}"
+    //kapt "io.arrow-kt:arrow-meta:${arrow_version}"
 }
 
 sourceCompatibility = 1.8

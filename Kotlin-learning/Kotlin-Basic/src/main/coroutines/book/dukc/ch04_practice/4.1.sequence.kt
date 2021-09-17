@@ -1,5 +1,12 @@
-package book.dukc.ch04_practice.kotlin
+package book.dukc.ch04_practice
 
+/**
+ * 《深入理解Kotlin协程》chapter 4.1：序列生成器
+ *
+ * @author Ztiany
+ *          Email ztiany3@gmail.com
+ *          Date 2020/9/25 10:08
+ */
 fun main() {
 
     val fibonacci = sequence {
@@ -16,5 +23,4 @@ fun main() {
     for (i in fibonacci.take(10)) {
         println(i)
     }
-
 }
