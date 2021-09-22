@@ -27,7 +27,7 @@ suspend fun main() {
     //coldFlow()
 
     //flow 的异常处理【6.3.4】
-    //exceptionHandling()
+    //flowExceptionHandling()
 
     //flow 的末端操作符【6.3.5】
     //endOperator()
@@ -39,13 +39,13 @@ suspend fun main() {
     //theCancellationOfFlow()
 
     //其他 Flow 的创建方式【6.3.8】
-    //theBuilderOfFlow()
+    theBuildersOfFlow()
 
     //Flow 的背压【6.3.9】
     //theBackPressureOfFlow()
 
     //Flow 的变换【6.3.10】
-    theTransformationOfFlow()
+    //theTransformationOfFlow()
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@ private suspend fun coldFlow() {
 ///////////////////////////////////////////////////////////////////////////
 // flow 的异常处理
 ///////////////////////////////////////////////////////////////////////////
-private suspend fun exceptionHandling() {
+private suspend fun flowExceptionHandling() {
     //正确的异常处理写法
     flow {
         emit(1)
@@ -228,7 +228,7 @@ private suspend fun theCancellationOfFlow() {
 ///////////////////////////////////////////////////////////////////////////
 // 其他 Flow 的创建方式
 ///////////////////////////////////////////////////////////////////////////
-private suspend fun theBuilderOfFlow() {
+private suspend fun theBuildersOfFlow() {
     //上面讲到 flow{...} 这种形式的创建方式，不过在这当中无法随意切换调度器，这是因为 emit 函数不是线程安全的。
     flow {
         emit(1)
@@ -254,7 +254,6 @@ private suspend fun theBuilderOfFlow() {
     }.collect {
         println(it)
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////

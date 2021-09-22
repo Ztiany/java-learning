@@ -46,13 +46,14 @@ suspend fun suspendFunc01(a: Int) {
 }
 
 /*
-    1. 在 suspendFunc02 的定义中，用到了 suspendCoroutine<T> 获取当前所在协程体的 Continuation<T> 的实例作为参数将挂起函数当成异步函数来处理。【suspendCoroutine 用于连接协程与异步函数】
+    1. 在 suspendFunc02 的定义中，用到了 suspendCoroutine<T> 获取当前所在协程体的 Continuation<T> 的实例作为参数将挂起函数当成异步函数来处理。
+       【suspendCoroutine 用于连接协程与异步函数】
     2. 因此协程调用 suspendFunc02 无法同步执行，会进入挂起状态，直到结果返回。
     3. 所谓协程的挂起其实就是程序执行流程发生异步调用时，当前调用流程的执行状态进入等待状态。【但是注意：挂起函数不一定真的会挂起，只是提供了挂起的条件。】
  */
-suspend fun suspendFunc02(a: String, b: String) = suspendCoroutine<Int> { continuation ->
+private suspend fun suspendFunc02(a: String, b: String) = suspendCoroutine<Int> { continuation ->
     thread {
-        continuation.resumeWith(Result.success(5)) // ... ① } }
+        continuation.resumeWith(Result.success(5))
 
         suspend fun notSuspend() = suspendCoroutine<Int> { continuation ->
             continuation.resume(100)
@@ -79,7 +80,7 @@ private suspend fun suspendPoint() = suspendCoroutine<Int> { continuation ->
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// CPS 变换：CPS变换（Continuation-Passing-Style Transformation），是通过传递 Continuation 来控制异步调用流程的。
+// CPS 变换：CPS 变换（Continuation-Passing-Style Transformation），是通过传递 Continuation 来控制异步调用流程。
 ///////////////////////////////////////////////////////////////////////////
 
 suspend fun notSuspend() = suspendCoroutine<Int> { continuation ->
@@ -97,10 +98,13 @@ private suspend fun cpsTransformation() {
     3. 挂起函数如果需要挂起，则需要通过 suspendCoroutine 来获取 Continuation 实例。我们已经知道它是协程体，但是这个实例是怎么传进来的呢？
         3.1 直接看 Kotlin 代码看不出来。
         3.2 想要刨根问底有两种方法：一种就是看字节码或者使用 Java 代码直接调用它，另一种就是使用 Kotlin 反射。
-    4. 参考 JavaInvokeSuspend 中的代码，发现上面 notSuspend 在 Java 语言看来实际上是 (Continuation<Integer>)->Object 类型，这正好与我们经常写的异步回调的方法类似，传一个回调进去等待结果返回就好了。
+    4. 参考 JavaInvokeSuspend 中的代码，发现上面 notSuspend 在 Java 语言看来实际上是 (Continuation<Integer>)->Object 类型，
+       这正好与我们经常写的异步回调的方法类似，传一个回调进去等待结果返回就好了。
     5. 问题在于，(Continuation<Integer>)->Object 类型是有返回值的，为什么要有返回值 Object？因为通常我们写的回调方法是不会有返回值的，其实这里的返回值 Object 有两种情况。
-            5.1 情况1：挂起函数同步返回。作为参数传入的 Continuation 的 resumeWith 不会被调用，函数的实际返回值就是它作为挂起函数的返回值。notSuspend 尽管看起来似乎调用了 resumeWith，不过调用对象是 SafeContinuation，这一点在前面已经多次提到，因此它的实现属于同步返回。
-            5.2 情况2：挂起函数挂起，执行异步逻辑。此时函数的实际返回值是一个挂起标志，通过这个标志外部协程就可以知道该函数需要挂起等到异步逻辑执行。在 Kotlin 中这个标志是个常量为 COROUTINE_SUSPENDED，定义在 Intrinsics.kt 当中。
+            5.1 情况1：挂起函数同步返回。作为参数传入的 Continuation 的 resumeWith 不会被调用，函数的实际返回值就是它作为挂起函数的返回值。
+                notSuspend 尽管看起来似乎调用了 resumeWith，不过调用对象是 SafeContinuation，这一点在前面已经多次提到，因此它的实现属于同步返回。
+            5.2 情况2：挂起函数挂起，执行异步逻辑。此时函数的实际返回值是一个挂起标志，通过这个标志外部协程就可以知道该函数需要挂起等到异步逻辑执行。
+                在 Kotlin 中这个标志是个常量为 COROUTINE_SUSPENDED，定义在 Intrinsics.kt 当中。
  */
 
     //使用  Kotlin 反射找到挂起函数的原理。
