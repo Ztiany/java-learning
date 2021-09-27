@@ -21,7 +21,7 @@ suspend fun main() {
     //getStartedOfFlow()
 
     //flow 的线程切换【6.3.2】
-    //switchingThread()
+    switchingThread()
 
     //冷的 flow【6.3.3】
     //coldFlow()
@@ -90,12 +90,22 @@ private suspend fun switchingThread() {
         flowOn 对应 subscribeOn
         collect 对应 observeOn【因为 collect 是一个挂起函数，有自己的调度器，不再需要类似 observeOn 的 API 来特意指定】
  */
-    withContext(Executors.newSingleThreadExecutor().asCoroutineDispatcher()) {
-        log("switchingThread")
+    withContext(Executors.newFixedThreadPool(1).asCoroutineDispatcher()) {
+        log("1")
         flow {
             emit(1)
+            log("2")
+        }.map {
+            log("3")
+            it
+        }.flowOn(Dispatchers.IO).map {
+            log("4")
+            it
+        }.map {
+            log("5")
+            it
         }.collect {
-            log("switchingThread")
+            log("6")
         }
     }
 }
