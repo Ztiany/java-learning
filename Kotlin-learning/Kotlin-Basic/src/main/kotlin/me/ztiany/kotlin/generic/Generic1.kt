@@ -40,7 +40,7 @@ fun main(args: Array<String>) {
     println(oneHalf(3))
     println(max("kotlin", "java"))
 
-    /*多泛型上线*/
+    /*多泛型上限*/
     val helloWorld = StringBuilder("Hello World")
     ensureTrailingPeriod(helloWorld)
     println(helloWorld)
