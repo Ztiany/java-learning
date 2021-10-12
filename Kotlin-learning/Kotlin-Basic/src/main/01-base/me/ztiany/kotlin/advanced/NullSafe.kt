@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.advance
+package me.ztiany.kotlin.advanced
 
 /**
  * 可空类型与非空类型：Kotlin 的类型系统旨在消除来自代码空引用的危险，也称为《十亿美元的错误》。

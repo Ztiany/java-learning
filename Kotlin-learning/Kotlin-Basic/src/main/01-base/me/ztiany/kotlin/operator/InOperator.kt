@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.operators
+package me.ztiany.kotlin.operator
 
 
 private data class Point3(val x: Int, val y: Int)

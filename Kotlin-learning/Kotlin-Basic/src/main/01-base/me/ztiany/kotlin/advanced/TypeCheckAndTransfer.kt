@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.advance
+package me.ztiany.kotlin.advanced
 
 /**
  *类型检查与转换：

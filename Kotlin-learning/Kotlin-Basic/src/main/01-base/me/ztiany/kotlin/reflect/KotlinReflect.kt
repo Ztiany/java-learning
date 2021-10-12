@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.reflects
+package me.ztiany.kotlin.reflect
 
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type

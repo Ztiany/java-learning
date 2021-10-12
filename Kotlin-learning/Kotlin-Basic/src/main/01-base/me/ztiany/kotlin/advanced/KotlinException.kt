@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.advance
+package me.ztiany.kotlin.advanced
 
 import java.lang.Integer.parseInt
 import java.nio.file.Files

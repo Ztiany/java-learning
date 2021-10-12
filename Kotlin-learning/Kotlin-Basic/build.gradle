@@ -52,19 +52,25 @@ repositories {
 sourceSets {
     main.kotlin.srcDirs += [
             //kotlin新特新
-            "src/main/new",
-            //kotlin 扩展库学习
-            "src/main/libraries",
-            //imooc教程示例代码
-            "src/main/imooc",
+            "src/main/01-base",
+
+            //kotlin新特新
+            "src/main/02-new",
+
             //gradle 工具
-            "src/main/tools",
+            "src/main/03-tools",
+
             //协程
-            "src/main/coroutines",
-            //libs from github
-            "src/main/github",
+            "src/main/04-coroutines",
+
+            //kotlin 扩展库学习
+            "src/main/05-third-libs",
+
+            //imooc教程示例代码
+            "src/main/06-imooc",
+
             //test
-            "src/main/test",
+            "src/main/07-test",
     ]
 }
 

@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.operators
+package me.ztiany.kotlin.operator
 
 import java.time.LocalDate
 

@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.operators
+package me.ztiany.kotlin.operator
 
 
 /** 解构声明   Destructuring Declaration：

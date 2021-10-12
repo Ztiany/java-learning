@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.operators
+package me.ztiany.kotlin.operator
 
 
 class Person1(private val firstName: String, private val lastName: String) : Comparable<Person1> {

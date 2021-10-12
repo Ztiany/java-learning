@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.advance
+package me.ztiany.kotlin.advanced
 
 /**
  *this表达式：为了表示当前的接收者，我们使用 this 表达式：
