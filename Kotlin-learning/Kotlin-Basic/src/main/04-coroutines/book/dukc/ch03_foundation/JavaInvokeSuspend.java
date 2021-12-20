@@ -2,7 +2,9 @@ package book.dukc.ch03_foundation;
 
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
+import kotlin.coroutines.EmptyCoroutineContext;
 import org.jetbrains.annotations.NotNull;
+import sun.invoke.empty.Empty;
 
 import static book.dukc.ch03_foundation._3_2_suspendKt.notSuspend;
 
@@ -20,13 +22,14 @@ public class JavaInvokeSuspend {
             @NotNull
             @Override
             public CoroutineContext getContext() {
-                return null;
+                return EmptyCoroutineContext.INSTANCE;
             }
 
             @Override
             public void resumeWith(@NotNull Object o) {
-
+                System.out.println("JavaInvokeSuspend.resumeWith");
             }
         });
     }
+
 }
