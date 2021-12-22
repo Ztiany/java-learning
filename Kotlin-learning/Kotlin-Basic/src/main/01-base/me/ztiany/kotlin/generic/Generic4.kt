@@ -7,10 +7,10 @@ private interface ProducerA<out T>{
 
 }
 private interface ProducerB<out T:Any>{
+
     fun getData():T
 
 }
-
 
 private fun testNullGeneric() {
     var producerA:ProducerA<String>

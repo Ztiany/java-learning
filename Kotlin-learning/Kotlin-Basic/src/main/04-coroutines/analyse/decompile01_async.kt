@@ -4,7 +4,7 @@ import kotlinx.coroutines.*
 
 suspend fun main() {
     log("aaaaa")
-    val deferred = GlobalScope.async(start = CoroutineStart.UNDISPATCHED) {
+    val deferred = GlobalScope.async {
         log("bbbbb")
         delay(100)
         log("ccccc")
