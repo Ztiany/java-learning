@@ -3,6 +3,24 @@ package org.ktacademy.effectivekt.item33
 import org.junit.Test
 
 //item33：1 使用【伴生工厂方法】
+class Usage1 {
+
+    @Test
+    fun test01() {
+        usage01()
+    }
+
+    @Test
+    fun test02() {
+        usage02()
+    }
+
+    @Test
+    fun test03() {
+        usage03()
+    }
+
+}
 
 ///////////////////////////////////////////////////////////////////////////
 //example01
@@ -17,8 +35,7 @@ private class MyList {
     }
 }
 
-@Test
-fun usage01() {
+private fun usage01() {
     MyList.of(1)
 }
 
@@ -63,7 +80,59 @@ class UserRepositoryImplForTest : UserRepository {
 }
 
 @Test
-fun usage02() {
+private fun usage02() {
     UserRepository.mocked = UserRepositoryImplForTest()
-    val userRepository = UserRepository.create()
+    val userRepository = UserRepository.get()
+    println(userRepository.getUser().name)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// example03
+///////////////////////////////////////////////////////////////////////////
+
+interface Dependency<T> {
+    var mocked: T?
+    fun get(): T
+    fun lazyGet(): Lazy<T> = lazy { get() }
+}
+
+abstract class ProviderV2<T>(val init: () -> T) : Dependency<T> {
+    var original: T? = null
+    override var mocked: T? = null
+    override fun get(): T = mocked ?: original ?: init().apply { original = this }
+}
+
+class UserRepositoryImplV2 : UserRepositoryV2 {
+    override fun getUser(): User {
+        return User("AlienV2")
+    }
+}
+
+interface UserRepositoryV2 {
+    fun getUser(): User
+
+    companion object :
+        Dependency<UserRepositoryV2> by object : ProviderV2<UserRepositoryV2>({ UserRepositoryImplV2() }) {
+
+        }
+}
+
+private fun usage03() {
+    val repository by UserRepositoryV2.lazyGet()
+    println(repository.getUser())
+}
+
+///////////////////////////////////////////////////////////////////////////
+// example04：伴生对象扩展工厂方法
+///////////////////////////////////////////////////////////////////////////
+interface Tool {
+    companion object {
+
+    }
+}
+
+class BigTool : Tool
+
+fun Tool.Companion.createBigTool(name: String): Tool {
+    return BigTool()
 }

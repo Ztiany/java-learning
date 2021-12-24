@@ -13,7 +13,7 @@ fun main() = runBlocking {
     }
 
     supervisorScope {
-        val child = launch(handler) {
+        val child = launch(handler/*如果没有 handler，不会影响协程的执行，但是会自动打印异常信息到控制台。*/) {
             println("Child throws an exception")
             throw AssertionError()
         }

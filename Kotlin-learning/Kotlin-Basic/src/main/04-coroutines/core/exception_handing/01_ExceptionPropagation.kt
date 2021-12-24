@@ -8,15 +8,17 @@ import kotlinx.coroutines.*
     后者依赖用户来最终消耗异常，比如说，通过 await 或 receive 。
  */
 fun main() = runBlocking {
+
+    //通过 GlobeScope 启动的协程单独启动一个协程作用域，内部的子协程遵从默认的作用域规则。通过 GlobeScope 启动的协程“自成一派”。
     val job = GlobalScope.launch {
         delay(1000)
         println("Throwing exception from launch")
-        //Kotlin 将在控制台打印抛出的异常
+        //Kotlin 将自动在控制台打印抛出的异常
         throw IndexOutOfBoundsException() // Will be printed to the console by Thread.defaultUncaughtExceptionHandler
     }
 
     try {
-        //launch 的异常不会被处理
+        //launch 的异常不会被处理【因为通过 GlobeScope 启动的协程单独启动一个协程作用域，与 runBlocking 的作用域没有级联关系。】
         job.join()
         println(message = "after joining")
     } catch (e: Exception) {
