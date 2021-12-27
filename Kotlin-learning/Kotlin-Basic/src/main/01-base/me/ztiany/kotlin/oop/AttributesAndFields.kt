@@ -1,9 +1,10 @@
 package me.ztiany.kotlin.oop
 
 import java.util.*
+import kotlin.properties.Delegates
 
 /**
- * 属性和字段
+ * **属性和字段**：
  *
  * 声明属性：Kotlin的类可以有属性.属性可以用关键字var 声明为可变的，否则使用只读关键字val。
  *
@@ -56,7 +57,6 @@ private fun testAddress() {
  *                 如果属性至少有一个访问器使用默认实现，或者自定义访问器通过 field 引用幕后字段，将会为该属性生成一个幕后字段。
  *
  * 幕后属性：如果你的需求不符合这套“隐式的幕后字段”方案，那么可以使用 幕后属性（backing property），即
- *
  */
 private class BackingField {
 
@@ -109,3 +109,9 @@ private class TestLateinit {
         }
 }
 
+/**
+ * Delegates.notNull<T>：如何让用 var 声明的基本数据类型变量也具有延迟初始化的效果，一种可参考的解决方案是通过 Delegates.notNull<T>，这是利用 Kotlin 中委托的语法来实现的。
+ */
+private class NotNullVar {
+    private var age: Int by Delegates.notNull()
+}

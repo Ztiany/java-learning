@@ -1,3 +1,6 @@
-# Kotlin 基础语法学习
+# Kotlin 基础学习
 
-[Kotlin Basic](https://kotlinlang.org/docs/basic-syntax.html) 学习代码
+学习资料：
+
+- [Kotlin 官方文档](https://kotlinlang.org/docs/basic-syntax.html)
+- [Kotlin 核心编程](https://github.com/DiveIntoKotlin/DiveIntoKotlinSamples)

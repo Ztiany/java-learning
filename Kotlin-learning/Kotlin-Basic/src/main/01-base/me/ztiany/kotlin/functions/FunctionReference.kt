@@ -1,6 +1,6 @@
 package me.ztiany.kotlin.functions
 
-/** 函数引用   */
+/** 函数引用 */
 fun main(args: Array<String>) {
 
     //包级函数引用

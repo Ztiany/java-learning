@@ -2,6 +2,10 @@ package me.ztiany.kotlin.functions
 
 import kotlin.math.pow
 
+/**Kotlin 函数基础*/
+fun main() {
+
+}
 
 /** 函数声明 */
 private fun sum(x: Int, y: Int): Int {
@@ -9,11 +13,15 @@ private fun sum(x: Int, y: Int): Int {
 }
 
 /**
- * 中缀表示法：
+ * 中缀表示法：在满足以下条件时，函数也可以通过中缀符号进行调用——它们是成员函数或者是扩展函数且只有一个参数，使用 infix 关键词进行标记。
  *
- * 在满足以下条件时,函数也可以通过中缀符号进行调用：它们是成员函数或者是扩展函数且只有一个参数，使用infix关键词进行标记，
- * 具体条件：1，成员函数或扩展函数；2，只有一个参数；3，用`infix` 关键字标注。
- * 应用场景： DSL
+ * 具体条件：
+ *
+ * - 1，成员函数或扩展函数；
+ * - 2，只有一个参数；
+ * - 3，用`infix`关键字标注。
+ *
+ * 应用场景： DSL
  */
 private infix fun Int.pow(x: Int): Int {
     return this.toDouble().pow(x.toDouble()).toInt()
@@ -43,11 +51,14 @@ private fun read(b: Array<Byte>, off: Int = 0, len: Int = b.size) {
  *
  * 调用 Java 函数时不能使用命名参数语法，因为 Java 字节码并不 总是保留函数参数的名称
  */
-private fun reformat(str: String,
-                     normalizeCase: Boolean = true,
-                     upperCaseFirstLetter: Boolean = true,
-                     divideByCamelHumps: Boolean = false,
-                     wordSeparator: Char = ' ') {
+private fun reformat(
+    str: String,
+    normalizeCase: Boolean = true,
+    upperCaseFirstLetter: Boolean = true,
+    divideByCamelHumps: Boolean = false,
+    wordSeparator: Char = ' '
+) {
+
 }
 
 private fun testReformat() {
@@ -57,7 +68,7 @@ private fun testReformat() {
 //返回 Unit 的函数：如果一个函数不返回任何有用的值，它的返回类型是 Unit。Unit 是一种只有一个值——Unit 的类型。这个 值不需要显式返回
 fun printHello(name: String?): Unit {
     if (name != null)
-        println("Hello ${name}")
+        println("Hello $name")
     else
         println("Hi there!")
 }
