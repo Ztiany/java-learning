@@ -2,14 +2,23 @@ package me.ztiany.kotlin.extend
 
 import kotlin.reflect.KProperty
 
+fun main(args: Array<String>) {
+    testSwap()
+    printFoo(ExtendD())//结果是：c
+    val c: ExtendC? = null
+    println(c.toString())
+    val list = listOf(3, 3)
+    println(list.lastIndex)
+    testDoIfNull()
+    println(1.name)
+}
 
 /**
- *Kotlin扩展：Kotlin 同 C# 类似，能够扩展一个类的新功能而无需继承该类或使用像装饰者这样的任何类型的设计模式。这通过叫做扩展的特殊声明完成。
+ *Kotlin 扩展：Kotlin 同 C# 类似，能够扩展一个类的新功能而无需继承该类或使用像装饰者这样的任何类型的设计模式。这通过叫做扩展的特殊声明完成。
  *                  Kotlin 支持扩展函数 和 扩展属性。
  *
- * 扩展的作用域：要使用所定义包之外的一个扩展，我们需要在调用方导入它
+ * 扩展的作用域：要使用所定义包之外的一个扩展，我们需要在调用方导入它。
  */
-
 //扩展函数示例
 private fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
     //这个 this 关键字在扩展函数内部对应到接收者对象
@@ -145,7 +154,7 @@ private class Delegate {
 
 }
 
-val Int.name: String  by Delegate()
+val Int.name: String by Delegate()
 
 private fun test() {
     //给Int添加
@@ -160,14 +169,12 @@ private fun test() {
     "A".add("B")
 }
 
-fun main(args: Array<String>) {
-    testSwap()
-    printFoo(ExtendD())//结果是：c
-    val c: ExtendC? = null
-    println(c.toString())
-    val list = listOf(3, 3)
-    println(list.lastIndex)
-    testDoIfNull()
+/**
+ * 当扩展函数和现有类的成员方法同时存在时，Kotlin 将会默认使用类的成员方法。看起来似乎不够合理，并且很容易引发一些问题：
+ * 我定义了新的方法，为什么还是调用到了旧的方法？但是换一个角度思考，在多人开发的时候，如果每个人都对 Son 扩展了 foo方法，
+ * 是不是很容易造成混淆。对于第三方类库来说甚至是一场灾难：我们把不应该更改的方法改变了。所以在使用时，我们必须注意：
+ * 同名的类成员方法的优先级总高于扩展函数。
+ */
+private fun thePriority() {
 
-    println(1.name)
 }

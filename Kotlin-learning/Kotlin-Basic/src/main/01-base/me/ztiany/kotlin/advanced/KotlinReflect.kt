@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.reflect
+package me.ztiany.kotlin.advanced
 
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -169,12 +169,12 @@ class LiveData<T>
 class Resource<T>
 class SalesPlanModel
 
-class A {
+class ClassA {
     val pendingSalesPlanList: LiveData<Resource<List<SalesPlanModel>>> = LiveData()
 }
 
 fun main(args: Array<String>) {
-    println(getType(A::pendingSalesPlanList.javaField!!.genericType))
+    println(getType(ClassA::pendingSalesPlanList.javaField!!.genericType))
 }
 
 private fun getType(type: Type): Type {
