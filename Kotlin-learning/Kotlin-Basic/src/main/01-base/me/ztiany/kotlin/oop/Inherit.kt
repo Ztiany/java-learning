@@ -2,26 +2,24 @@ package me.ztiany.kotlin.oop
 
 
 /**
- * 继承：
+ *  **继承**：
  *
- * 1，在 Kotlin 中所有类都有一个共同的超类 Any，这对于没有超类型声明的类是默认超类
- * 2，Any 不是 java.lang.Object；尤其是，它除了 equals()、hashCode()和toString()外没有任何成员
- * 3，要声明一个显式的超类型，需要把类型放到类头的冒号之后
- * 4，如果基类有一个主构造函数，其基类型必须用基类型的主构造函数参数就地初始化。
- * 5，如果基类没有主构造函数，那么每个次构造函数必须 使用 super 关键字初始化其基类型，或委托给另一个构造函数做到这一点。
- *       注意，在这种情况下，不同的次构造函数可以调用基类型的不同的构造函数
- * 6，类上的 open 标注与 Java 中 final 相反，它允许其他类 从这个类继承。默认情况下，在 Kotlin 中所有的类都是 final
+ * 1. 在 Kotlin 中所有类都有一个共同的超类 Any，这对于没有超类型声明的类是默认超类。
+ * 2. Any 不是 java.lang.Object；尤其是，它除了 equals()、hashCode()和toString()外没有任何成员。
+ * 3. 要声明一个显式的超类型，需要把类型放到类头的冒号之后。
+ * 4. 如果基类有一个主构造函数，其基类型必须用基类型的主构造函数参数就地初始化。
+ * 5. 如果基类没有主构造函数，那么每个次构造函数必须 使用 super 关键字初始化其基类型，或委托给另一个构造函数做到这一点。
+ * 注意，在这种情况下，不同的次构造函数可以调用基类型的不同的构造函数。
+ * 6. 类上的 open 标注与 Java 中 final 相反，它允许其他类 从这个类继承。默认情况下，在 Kotlin 中所有的类都是 final。
  */
+private open class Base//Base 继承 Any
 
-
-private open class Base//Base继承与Any
-
-//由主构造函数，使用this
+//由主构造函数，使用 this
 private class Derived(p: Int) : Base() {
     constructor(p: Int, name: String) : this(p)
 }
 
-//没有主构造函数，用super
+//没有主构造函数，用 super
 private class Derived2 : Base {
     constructor(p: Int, name: String) : super() {
         println(name)
@@ -42,7 +40,6 @@ private class Derived2 : Base {
  *      而将其覆盖为 var 只是在子类中额外声明一个 setter 方法
  *7，可以在主构造函数中使用 override 关键字作为属性声明的一部分。
  * */
-
 private open class Bird(name: String, age: Int) {
     open fun fly() {}
     var mAge: Int = age
@@ -64,11 +61,11 @@ private fun testOverride(args: Array<String>) {
     println(goose.color)
 }
 
+
 /**
  * 覆盖规则： 如果一个类从它的直接超类继承相同成员的多个实现，它必须覆盖这个成员并提供其自己的实现（也许用继承来的其中之一）。
  *                  为了表示采用从哪个超类型继承的实现，我们使用由尖括号中超类型名限定的 super，如 super<Base>
  */
-
 private open class A {
 
     open fun f() {

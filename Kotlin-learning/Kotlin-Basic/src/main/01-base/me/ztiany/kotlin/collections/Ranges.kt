@@ -1,5 +1,10 @@
 package me.ztiany.kotlin.collections
 
+/**区间的使用*/
+fun main() {
+    useRange()
+    rangeFunction()
+}
 
 /**
  * 区间：区间表达式由具有操作符形式 .. 的 rangeTo 函数辅以 in 和 !in 形成。
@@ -9,7 +14,6 @@ package me.ztiany.kotlin.collections
  *      4，以不等于 1 的任意步长迭代数字？ 当然没问题， step() 函数有助于此
  *      5，要创建一个不包括其结束元素的区间，可以使用 until 函数
  */
-
 private fun useRange() {
     //使用区间
     for (i in 1..10) {
@@ -47,7 +51,6 @@ private fun rangeFunction() {
     }
 }
 
-
 /** 使用 in 运算符来检测某个数字是否在指定区间内 */
 private fun range() {
     val x = 10
@@ -77,9 +80,4 @@ private fun rangeIteration() {
         print(x)
         print(',')
     }
-}
-
-fun main(args: Array<String>) {
-    useRange()
-    rangeFunction()
 }

@@ -5,6 +5,9 @@ import kotlin.reflect.KClass
 
 
 /** 泛型：变型和子类型化*/
+fun main() {
+
+}
 
 /*添加out，使其可以型变*/
 private class Producer<out T>

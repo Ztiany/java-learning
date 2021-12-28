@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.functions
+package me.ztiany.kotlin.function
 
 /** 函数引用 */
 fun main(args: Array<String>) {

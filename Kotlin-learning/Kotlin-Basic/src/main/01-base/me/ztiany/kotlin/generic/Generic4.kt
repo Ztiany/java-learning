@@ -1,6 +1,10 @@
 package me.ztiany.kotlin.generic
 
 
+fun main() {
+    testNullGeneric()
+}
+
 private interface ProducerA<out T>{
 
     fun getData():T

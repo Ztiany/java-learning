@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.functions
+package me.ztiany.kotlin.function
 
 /**
  *  Refer to：[In Kotlin, loops are deprecated](https://medium.com/@lucgirardin/in-kotlin-loops-are-deprecated-dae88cd5ae9c)

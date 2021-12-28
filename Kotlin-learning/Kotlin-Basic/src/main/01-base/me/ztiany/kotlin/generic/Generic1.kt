@@ -1,6 +1,22 @@
 package me.ztiany.kotlin.generic
 
 /** 泛型类型参数 */
+fun main(args: Array<String>) {
+    /*列表*/
+    val letters = ('a'..'z').toList()
+    println(letters.slice<Char>(0..2))
+    println(letters.slice(10..13))
+    println(listOf(1, 2, 3, 4).penultimate)
+
+    /*泛型上限*/
+    println(oneHalf(3))
+    println(max("kotlin", "java"))
+
+    /*多泛型上限*/
+    val helloWorld = StringBuilder("Hello World")
+    ensureTrailingPeriod(helloWorld)
+    println(helloWorld)
+}
 
 private val <T> List<T>.penultimate: T
     get() = this[size - 2]
@@ -27,21 +43,4 @@ private fun <T : Number> testList(list: MutableList<T>) {
     list.forEach {
         it.toByte()
     }
-}
-
-fun main(args: Array<String>) {
-    /*列表*/
-    val letters = ('a'..'z').toList()
-    println(letters.slice<Char>(0..2))
-    println(letters.slice(10..13))
-    println(listOf(1, 2, 3, 4).penultimate)
-
-    /*泛型上限*/
-    println(oneHalf(3))
-    println(max("kotlin", "java"))
-
-    /*多泛型上限*/
-    val helloWorld = StringBuilder("Hello World")
-    ensureTrailingPeriod(helloWorld)
-    println(helloWorld)
 }

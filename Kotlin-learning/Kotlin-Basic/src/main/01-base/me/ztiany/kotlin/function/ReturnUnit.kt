@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.functions
+package me.ztiany.kotlin.function
 
 /**
  * **如何理解 Unit**？其实它与 int 一样，都是一种类型，然而它不代表任何信息，用面向对象的术语来描述就是一个单例，它的实例只有一个，可写为 ()。

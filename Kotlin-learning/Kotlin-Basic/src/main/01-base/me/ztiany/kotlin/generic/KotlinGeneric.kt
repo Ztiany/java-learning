@@ -4,23 +4,32 @@ import java.util.*
 
 
 /**
- *Kotlin泛型
+ *Kotlin 泛型
  *
- *         1，泛型
- *         2，声明处型变
- *         3，类型投影
- *         4，星投影
- *         5，@UnsafeVariance
- *         6，泛型函数
- *         7，泛型约束与where子句
- *         8，Kotlin集合中的泛型
+ *         1. 泛型
+ *         2. 声明处型变
+ *         3. 类型投影
+ *         4. 星投影
+ *         5. @UnsafeVariance
+ *         6. 泛型函数
+ *         7. 泛型约束与 where 子句
+ *         8. Kotlin 集合中的泛型
  *
- *         https://www.kotlincn.net/docs/reference/generics.html
- *         https://blog.kotliner.cn/2017/06/26/kotlin-generics/
- *         https://kymjs.com/code/2017/06/06/01/
+ * 参考资料：
+ *
+ *   - https://www.kotlincn.net/docs/reference/generics.html
+ *   - https://blog.kotliner.cn/2017/06/26/kotlin-generics/
+ *   - https://kymjs.com/code/2017/06/06/01/
  */
+fun main() {
 
-//1 泛型：与Java 类似，Kotlin 中的类也可以有类型参数
+}
+
+/**
+ * 1 泛型：与 Java  类似，Kotlin 中的类也可以有类型参数。
+ *
+ * 需要注意的是Kotlin 是基于 Java 6 版本的，一开始就有泛型，不存在需要兼容老版本代码的问题。所以，当你声明一个空列表时，Kotlin 需要你显式地声明具体的类型参数。
+ */
 private class Box<T>(t: T) {
     var value = t
 }
@@ -30,9 +39,8 @@ private val box1: Box<Int> = Box<Int>(1)
 // 1 具有类型 Int，所以编译器知道我们说的是 Box<Int>。则可以省略掉返现说明
 private val box2 = Box(1)
 
-
 /**
- * 2 声明处型变——in和out：
+ * 2 声明处型变——in 和 out：
  *
  *      一般原则是：当一个类 C 的类型参数 T 被声明为 out 时，它就只能出现在 C 的成员的输出-位置，
  *      但回报是 C<Base> 可以安全地作为 C<Derived>的超类。
@@ -49,7 +57,7 @@ private val box2 = Box(1)
  *
  *       总结：out，输出，表示生产者；in，进入，表示消费者
  *
- *       可以看出Kotlin 抛弃了Java的extend和supuer，引用了生产者和消费者的概念
+ *       可以看出Kotlin 抛弃了Java的extend和super，引用了生产者和消费者的概念
  */
 
 private abstract class Source<out T> {
@@ -72,17 +80,19 @@ private fun testTComparable(x: TComparable<Number>) {
     val y: TComparable<Double> = x // OK！
 }
 
-/*
+/**
  * 3 类型投影
  *
  *  将类型参数 T 声明为 out 非常方便，并且能避免使用处子类型化的麻烦，但是有些类实际上不能限制为只返回 T！
  *
- *          比如Array，该类在 T 上既不能是协变的也不能是逆变的。这造成了一些不灵活性。
+ *          比如 Array，该类在 T 上既不能是协变的也不能是逆变的。这造成了一些不灵活性。
  *
+ * ```
  *               private  class Array<T>(val size: Int) {
  *                   abstract fun get(index: Int): T
  *                   abstract fun set(index: Int, value: T)
  *               }
+ *```
  */
 
 //这个函数应该将项目从一个数组复制到另一个数组。让我们尝试在实践中应用它
@@ -99,12 +109,15 @@ private fun testCopyArray1() {
     //copyArray1(ints, any) // 错误：期望 (Array<Any>, Array<Any>)
 }
 
-//Array <T> 在 T 上是不型变的，因此 Array <Int> 和 Array <Any> 都不是另一个的子类型。为什么？
-// 因为 copy 可能做坏事， 也就是说，例如它可能尝试写一个 String 到 from， 并且如果我们实际上传递一个 Int 的数组，
-// 一段时间后将会抛出一个 ClassCastException 异常。
+/*
+Kotlin 中的数组是支持泛型的，当然也不再协变，也就是说你不能将任意一个对象数组赋值给 Array<Any> 或者 Array<Any？>。
 
-//那么，我们唯一要确保的是 copy() 不会做任何坏事。我们想阻止它写到 from，我们可以：
+Array <T> 在 T 上是不型变的，因此 Array <Int> 和 Array <Any> 都不是另一个的子类型。为什么？
+            因为 copy 可能做坏事， 也就是说，例如它可能尝试写一个 String 到 from， 并且如果我们实际上传递一个 Int 的数组，
+            一段时间后将会抛出一个 ClassCastException 异常。
 
+那么，我们唯一要确保的是 copy() 不会做任何坏事。我们想阻止它写到 from，我们可以使用 out 打破泛型不变：
+ */
 private fun copyArray2(from: Array<out Any>, to: Array<Any>) {
     assert(from.size == to.size)
     for (i in from.indices) {
@@ -152,11 +165,9 @@ private fun fill(dest: Array<in String>, value: String) {
  *          Function<*, *> 表示 Function<in Nothing, out Any?>。
  */
 
-
 private interface Foo<T>
 
 private class Bar : Foo<Foo<*>>
-
 
 // 5  @UnsafeVariance注解，用于协变类型的内部方法参数上的注解
 
@@ -197,7 +208,6 @@ private class MyCollection2<out T> {
  * 6 泛型函数
  *      不仅类可以有类型参数。函数也可以有。类型参数要放在函数名称之前：
  */
-
 private fun <T> singletonList(item: T): List<T> {
     return Collections.singletonList(item)
 }
@@ -213,7 +223,6 @@ private fun testFunctionGeneric() {
     singletonList("A")//如果编译器可以推断出，实际泛型参数可以省略
     1.basicToString()
 }
-
 
 /*
  * 7  泛型约束
@@ -238,9 +247,9 @@ private fun <T> cloneWhenGreater(list: List<T>, threshold: T): List<T> where T :
 }
 
 /**
+8  Kotlin 集合中的泛型
 
-8  Kotlin集合中的泛型
-
+```
 public interface Iterable<out T>
 
 public interface ListIterator<out T> : Iterator<T>
@@ -253,5 +262,8 @@ public interface MutableCollection<E> : Collection<E>, MutableIterable<E>
 
 public interface MutableList<E> : List<E>, MutableCollection<E>
 public interface MutableSet<E> : Set<E>, MutableCollection<E>
-
+```
  */
+private fun genericCollection() {
+
+}

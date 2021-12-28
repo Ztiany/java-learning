@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.functions;
+package me.ztiany.kotlin.function;
 
 /**
  * @see ReturnUnitKt, Kotlin 核心编程》第二章

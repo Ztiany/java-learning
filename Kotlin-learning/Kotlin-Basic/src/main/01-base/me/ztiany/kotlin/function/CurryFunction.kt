@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.functions
+package me.ztiany.kotlin.function
 
 import java.io.OutputStream
 import java.nio.charset.Charset

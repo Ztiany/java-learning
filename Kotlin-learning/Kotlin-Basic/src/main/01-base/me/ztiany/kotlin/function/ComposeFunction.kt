@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.functions
+package me.ztiany.kotlin.function
 
 /** **函数复合**：组合多个函数成一个新的函数 */
 fun main() {
