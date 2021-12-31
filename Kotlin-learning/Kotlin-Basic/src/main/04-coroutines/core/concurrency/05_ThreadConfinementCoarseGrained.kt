@@ -6,7 +6,7 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlin.system.measureTimeMillis
 
-/*
+/**
 在实践中，线程限制是在大段代码中执行的，例如：状态更新类业务逻辑中大部分都是限于单线程中。
 下面的示例演示了这种情况， 在单线程上下文中运行每个协程。 这里我们使用 CoroutineScope() 函数来切换协程上下文为 CoroutineScope：
  */
@@ -28,7 +28,7 @@ private suspend fun CoroutineScope.massiveRun(action: suspend () -> Unit) {
 private val counterContext = newSingleThreadContext("CounterContext")
 private var counter = 0
 
-fun main() = runBlocking<Unit> {
+fun main() = runBlocking {
     //sampleStart
     CoroutineScope(counterContext).massiveRun {
         // run each coroutine in the single-threaded context
