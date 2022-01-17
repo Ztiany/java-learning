@@ -24,6 +24,7 @@ public class GreetingFileTransformer implements ClassFileTransformer {
     private final String agentArgs;
 
     public GreetingFileTransformer(String agentArgs) {
+        System.out.println("GreetingFileTransformer.GreetingFileTransformer");
         this.agentArgs = agentArgs;
     }
 
@@ -42,12 +43,11 @@ public class GreetingFileTransformer implements ClassFileTransformer {
             下面示例代码，使用 BCEL 库实现将 me.ztiany.agent.test.jdk5.JDK5AgentTest.getGreeting() 方法输出的 hello world，替换为输出 premain 方法的传入的参数 agentArgs。
     */
     @Override
-    public byte[] transform(
-            ClassLoader loader,//要转换的类加载器；如果是引导加载器，则为 null
-            String className,//类的全路径名称，例如，"java/util/List"。
-            Class<?> classBeingRedefined,//如果是被重定义或重转换触发，则为重定义或重转换的类；如果是类加载，则为 null
-            ProtectionDomain protectionDomain,//类的保护域
-            byte[] classfileBuffer//类的字节码
+    public byte[] transform(ClassLoader loader,//要转换的类加载器；如果是引导加载器，则为 null
+                            String className,//类的全路径名称，例如，"java/util/List"。
+                            Class<?> classBeingRedefined,//如果是被重定义或重转换触发，则为重定义或重转换的类；如果是类加载，则为 null
+                            ProtectionDomain protectionDomain,//类的保护域
+                            byte[] classfileBuffer//类的字节码
     ) {
         System.out.println("load->" + className);
 

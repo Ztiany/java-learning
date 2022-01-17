@@ -29,12 +29,7 @@ public class AsmCreateClass2 extends ClassLoader implements Opcodes {
         methodVisitor.visitEnd();
 
         // step3：生成main方法
-        methodVisitor = classWriter.visitMethod(
-                ACC_PUBLIC + ACC_STATIC,
-                "main",
-                "([Ljava/lang/String;)V",
-                null,
-                null);
+        methodVisitor = classWriter.visitMethod(ACC_PUBLIC + ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null);
         // 取得一个静态字段将其放入栈，相当于“System.out”。“Ljava/io/PrintStream;”是字段类型的描述，翻译过来相当于：“java.io.PrintStream”类型。在字节码中凡是引用类型均由“L”开头“;”结束表示，中间是类型的完整名称。
         methodVisitor.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
         //将字符串“Hello world!”放入栈，此时栈中第一个元素是“System.out”，第二个元素是“Hello world”。

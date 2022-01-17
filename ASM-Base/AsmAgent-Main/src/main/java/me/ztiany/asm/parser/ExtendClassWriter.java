@@ -1,4 +1,4 @@
-package me.ztiany.asm.creator;
+package me.ztiany.asm.parser;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;

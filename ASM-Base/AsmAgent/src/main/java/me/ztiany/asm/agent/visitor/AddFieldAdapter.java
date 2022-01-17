@@ -42,4 +42,5 @@ public class AddFieldAdapter extends ClassVisitor {
         }
         cv.visitEnd();
     }
+
 }

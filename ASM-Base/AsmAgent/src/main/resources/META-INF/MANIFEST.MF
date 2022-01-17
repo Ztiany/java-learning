@@ -1,3 +1,5 @@
 Manifest-Version: 1.0
+Agent-Class: me.ztiany.asm.agent.AsmAgent
 Premain-Class: me.ztiany.asm.agent.AsmAgent
 Can-Redefine-Classes: true
+Can-Retransform-Classes: true

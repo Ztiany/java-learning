@@ -7,6 +7,7 @@ package me.ztiany.agent.test.jdk6;
  */
 public class JDK6AgentTest {
 
+    /*todo*/
     public static void main(String... args) {
 
     }

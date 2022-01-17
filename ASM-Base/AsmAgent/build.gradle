@@ -11,16 +11,20 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'commons-io:commons-io:2.5'
-    compile 'org.ow2.asm:asm:5.1'
-    compile 'org.ow2.asm:asm-commons:5.1'
-    compile 'com.squareup.okio:okio:1.11.0'
+    compile 'commons-io:commons-io:2.11.0'
+    compile 'org.ow2.asm:asm:9.2'
+    compile 'org.ow2.asm:asm-commons:9.2'
+    compile 'com.squareup.okio:okio:3.0.0'
 }
 
 jar {
     baseName = "AsmAgent"
 
     manifest {
-        attributes 'Manifest-Version': '1.0', 'Premain-Class': 'me.ztiany.asm.agent.AsmAgent', 'Can-Redefine-Classes': true
+        attributes 'Manifest-Version': '1.0',
+                'Agent-Class': 'me.ztiany.asm.agent.AsmAgent',
+                'Premain-Class': 'me.ztiany.asm.agent.AsmAgent',
+                'Can-Redefine-Classes': true,
+                "Can-Retransform-Classes": true
     }
 }

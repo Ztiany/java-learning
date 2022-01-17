@@ -14,11 +14,13 @@ public class AsmAgent implements ClassFileTransformer {
     private final AsmTransformer asmTransformer = new AsmTransformer();
 
     private AsmAgent(String agentArgs) {
+        System.out.println("AsmAgent: agentArgs = " + agentArgs);
         this.agentArgs = agentArgs;
     }
 
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) {
+        System.out.println("AsmAgent.transform: loader = " + loader + ", className = " + className + ", classBeingRedefined = " + classBeingRedefined + ", protectionDomain = " + protectionDomain);
         return asmTransformer.transform(loader, className, classBeingRedefined, protectionDomain, classfileBuffer, agentArgs);
     }
 

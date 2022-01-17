@@ -1,13 +1,9 @@
 package me.ztiany.asm.sample;
 
+import org.objectweb.asm.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
-
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 
 /**
  * 通过ASM生成类的字节码：https://blog.csdn.net/catoop/article/details/50629921
@@ -48,12 +44,7 @@ public class HelloGeneratorClass implements Opcodes {
         cw.visitSource("Hello.java", null);
 
         {
-            fv = cw.visitField(
-                    ACC_PUBLIC + ACC_FINAL + ACC_STATIC,
-                    "FLAG",
-                    "Ljava/lang/String;",
-                    null,
-                    "\u6211\u662f\u5e38\u91cf");
+            fv = cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC, "FLAG", "Ljava/lang/String;", null, "\u6211\u662f\u5e38\u91cf");
             fv.visitEnd();
         }
 
@@ -106,8 +97,7 @@ public class HelloGeneratorClass implements Opcodes {
         }
 
         {
-            mv = cw.visitMethod(ACC_PUBLIC, "testList", "()Ljava/util/List;", "()Ljava/util/List<Ljava/lang/String;>;",
-                    null);
+            mv = cw.visitMethod(ACC_PUBLIC, "testList", "()Ljava/util/List;", "()Ljava/util/List<Ljava/lang/String;>;", null);
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel(l0);
@@ -142,8 +132,7 @@ public class HelloGeneratorClass implements Opcodes {
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V", false);
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "size", "()I", true);
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;",
-                    false);
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
             Label l5 = new Label();
@@ -157,12 +146,7 @@ public class HelloGeneratorClass implements Opcodes {
         }
 
         {
-            mv = cw.visitMethod(
-                    ACC_PUBLIC + ACC_VARARGS,
-                    "testMapList",
-                    "(Z[Ljava/util/Map;)Ljava/util/List;",
-                    "(Z[Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;)Ljava/util/List<Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;>;",
-                    null);
+            mv = cw.visitMethod(ACC_PUBLIC + ACC_VARARGS, "testMapList", "(Z[Ljava/util/Map;)Ljava/util/List;", "(Z[Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;)Ljava/util/List<Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;>;", null);
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel(l0);
@@ -188,10 +172,7 @@ public class HelloGeneratorClass implements Opcodes {
             mv.visitJumpInsn(GOTO, l4);
             Label l5 = new Label();
             mv.visitLabel(l5);
-            mv.visitFrame(Opcodes.F_FULL, 8,
-                    new Object[]{"com/shanhy/demo/asm/hello/Hello", Opcodes.INTEGER, "[Ljava/util/Map;",
-                            "java/util/List", Opcodes.TOP, Opcodes.INTEGER, Opcodes.INTEGER, "[Ljava/util/Map;"},
-                    0, new Object[]{});
+            mv.visitFrame(Opcodes.F_FULL, 8, new Object[]{"com/shanhy/demo/asm/hello/Hello", Opcodes.INTEGER, "[Ljava/util/Map;", "java/util/List", Opcodes.TOP, Opcodes.INTEGER, Opcodes.INTEGER, "[Ljava/util/Map;"}, 0, new Object[]{});
             mv.visitVarInsn(ALOAD, 7);
             mv.visitVarInsn(ILOAD, 5);
             mv.visitInsn(AALOAD);
@@ -211,8 +192,7 @@ public class HelloGeneratorClass implements Opcodes {
             mv.visitVarInsn(ILOAD, 6);
             mv.visitJumpInsn(IF_ICMPLT, l5);
             mv.visitLabel(l2);
-            mv.visitFrame(Opcodes.F_FULL, 4, new Object[]{"com/shanhy/demo/asm/hello/Hello", Opcodes.INTEGER,
-                    "[Ljava/util/Map;", "java/util/List"}, 0, new Object[]{});
+            mv.visitFrame(Opcodes.F_FULL, 4, new Object[]{"com/shanhy/demo/asm/hello/Hello", Opcodes.INTEGER, "[Ljava/util/Map;", "java/util/List"}, 0, new Object[]{});
             mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
             mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
             mv.visitInsn(DUP);
@@ -220,8 +200,7 @@ public class HelloGeneratorClass implements Opcodes {
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V", false);
             mv.visitVarInsn(ALOAD, 3);
             mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "size", "()I", true);
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;",
-                    false);
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
             Label l8 = new Label();
