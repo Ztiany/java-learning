@@ -1,4 +1,4 @@
-package me.ztiany.asm.parser;
+package me.ztiany.asm.core.method;
 
 import org.objectweb.asm.*;
 
@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class AsmMethodPrinter {
 
     public static void main(String... args) throws IOException {
-        ClassReader classReader = new ClassReader("me/ztiany/asm/parser/DemoClass");
+        ClassReader classReader = new ClassReader("me/ztiany/asm/core/method/DemoClass");
         classReader.accept(new PrintClassVisitor(Opcodes.ASM5), ClassReader.EXPAND_FRAMES);
     }
 

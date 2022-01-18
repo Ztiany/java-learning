@@ -1,4 +1,4 @@
-package me.ztiany.asm.creator;
+package me.ztiany.asm.core.clazz.creator;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;

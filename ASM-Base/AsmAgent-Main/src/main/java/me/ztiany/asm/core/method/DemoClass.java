@@ -1,4 +1,4 @@
-package me.ztiany.asm.parser;
+package me.ztiany.asm.core.method;
 
 /**
  * @author ztiany

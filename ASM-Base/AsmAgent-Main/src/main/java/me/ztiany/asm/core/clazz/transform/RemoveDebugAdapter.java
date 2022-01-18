@@ -1,11 +1,11 @@
-package me.ztiany.asm.agent.visitor;
+package me.ztiany.asm.core.clazz.transform;
 
 import org.objectweb.asm.ClassVisitor;
 
 import static org.objectweb.asm.Opcodes.ASM5;
 
 /**
- * 移除了outer和inner类的信息，以及被编译的类的名称（由此产生的类保持完整的功能，因为这些元素仅用于调试目的）
+ * 移除了 outer 和 inner 类的信息，以及被编译的类的名称（由此产生的类保持完整的功能，因为这些元素仅用于调试目的）
  */
 public class RemoveDebugAdapter extends ClassVisitor {
 
