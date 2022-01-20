@@ -1,4 +1,4 @@
-package me.ztiany.asm.core.method;
+package me.ztiany.asm.core.method.parser;
 
 /**
  * @author ztiany
@@ -21,10 +21,7 @@ public class DemoClass {
 
     @Override
     public String toString() {
-        return "DemoClass{" +
-                "age=" + age +
-                ", name='" + name + '\'' +
-                '}';
+        return "DemoClass{" + "age=" + age + ", name='" + name + '\'' + '}';
     }
 
     public int getAge() {
@@ -41,6 +38,14 @@ public class DemoClass {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public static void sleep(long d) {
+        try {
+            Thread.sleep(d);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

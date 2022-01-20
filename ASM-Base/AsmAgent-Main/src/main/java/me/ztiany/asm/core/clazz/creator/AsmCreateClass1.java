@@ -24,6 +24,7 @@ public class AsmCreateClass1 {
             }
         }.loadClass("pkg.Comparable");
 
+        System.out.println();
         System.out.println(exampleClass);
     }
 
@@ -44,7 +45,7 @@ public class AsmCreateClass1 {
         TraceClassVisitor cv = new TraceClassVisitor(cw, printWriter);
 
         //类的声明
-        cw.visit(
+        cv.visit(
                 //V1_5 表示 java 字节码的版本
                 V1_5,
                 //ACC_XXX 常量是与 Java 修饰符对应的标志。这里规定这个类是一个接口，而且它是 public 和 abstract 的
@@ -60,7 +61,7 @@ public class AsmCreateClass1 {
 
         //添加三个字段
         //创建字段，每一个部分都是一个子过程，所以也对应一个 visitEnd 方法
-        cw.visitField(
+        cv.visitField(
                 //第一个参数是一组标志，对应于 Java 修饰符。
                 ACC_PUBLIC + ACC_FINAL + ACC_STATIC,
                 //第二个参数是字段的名字，与它在源代码中的显示相同。
@@ -77,7 +78,7 @@ public class AsmCreateClass1 {
         /*添加一个方法*/
 
         //创建方法
-        cw.visitMethod(
+        cv.visitMethod(
                 //第一个参数是一组对应于 Java 修饰符的标志。
                 ACC_PUBLIC + ACC_ABSTRACT,
                 //第二个参数是方法名，与其在源代码中的显示一样。

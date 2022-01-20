@@ -9,10 +9,10 @@ import java.util.Arrays;
 /**
  * 移除一个类的字段
  */
-public class RemoveMethodAdapter extends ClassVisitor {
+class RemoveMethodAdapter extends ClassVisitor {
 
-    private String mName;
-    private String mDesc;
+    private final String mName;
+    private final String mDesc;
 
     RemoveMethodAdapter(ClassVisitor cv, String mName, String mDesc) {
         super(Opcodes.ASM5, cv);
