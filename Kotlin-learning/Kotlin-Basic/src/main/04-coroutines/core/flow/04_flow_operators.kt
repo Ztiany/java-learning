@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 import kotlin.system.measureTimeMillis
 
 /**
- *operators.
+ * operators.
  *
  * @author Ztiany
  *          Email ztiany3@gmail.com
@@ -50,8 +50,11 @@ suspend fun main() {
 // Transform
 ///////////////////////////////////////////////////////////////////////////
 
-/**The most general one is called transform. It can be used to imitate simple transformations like map and filter,
- * as well as implement more complex transformations. Using the transform operator, we can emit arbitrary values an arbitrary number of times.*/
+/**
+ * The most general one is called transform. It can be used to imitate simple transformations like map and filter,
+ * as well as implement more complex transformations. Using the transform operator, we can emit arbitrary values
+ * an arbitrary number of times.
+ */
 private suspend fun transformOperator() {
     (1..10).asFlow()
             .transform {
@@ -83,8 +86,9 @@ private suspend fun performRequest(request: Int): String {
 private suspend fun takeOperator() {
     flow {
         var a = 1
-        //Cancellation in coroutines is always performed by throwing an exception,
-        //so that all the resource-management functions (like try { ... } finally { ... } blocks) operate normally in case of cancellation.
+        // Cancellation in coroutines is always performed by throwing an exception,
+        // so that all the resource-management functions (like try { ... } finally { ... } blocks)
+        // operate normally in case of cancellation.
         try {
             while (true) {
                 emit(a++)
@@ -94,7 +98,8 @@ private suspend fun takeOperator() {
             e.printStackTrace()
         }
     }
-            //Size-limiting intermediate operators like take cancel the execution of the flow when the corresponding limit is reached.
+            // Size-limiting intermediate operators like take cancel the execution of the flow when
+            // the corresponding limit is reached.
             .take(5)
             .collect {
                 println("take: $it")
@@ -158,7 +163,7 @@ private suspend fun flowOnOperator() {
     //collect：Collection of a flow always happens in the context of the calling coroutine.【main】
     flow {
         log("Started simple flow")
-        //Since simple().collect is called from the main thread, the body of simple 's flow is also called in the main thread.
+        // Since simple().collect is called from the main thread, the body of simple 's flow is also called in the main thread.
         // This is the perfect default for fast-running or asynchronous code that does not care about the execution context and does not block the caller.
         for (i in 1..3) {
             emit(i)
@@ -167,7 +172,8 @@ private suspend fun flowOnOperator() {
         log("Collected $value")
     }
 
-    //collect with withContext：Collection of a flow always happens in the context of the calling coroutine.【DefaultDispatcher-worker-1】
+    // collect with withContext：Collection of a flow always happens in the context
+    // of the calling coroutine.【DefaultDispatcher-worker-1】
     withContext(Dispatchers.Default) {
         flow {
             log("Started simple flow")
@@ -179,8 +185,10 @@ private suspend fun flowOnOperator() {
         }
     }
 
-    /*Usually, withContext is used to change the context in the code using Kotlin coroutines,
-     * but code in the flow { ... } builder has to honor the context preservation property and is not allowed to emit from a different context. */
+    /* Usually, withContext is used to change the context in the code using Kotlin coroutines,
+     * but code in the flow { ... } builder has to honor the context preservation property and
+     * is not allowed to emit from a different context.
+     */
     flow {
         // The WRONG way to change context for CPU-consuming code in flow builder
         withContext(Dispatchers.Default) {
