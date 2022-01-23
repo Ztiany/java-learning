@@ -132,6 +132,7 @@ dependencies {
     //okhttp
     compile "com.squareup.okhttp3:okhttp:4.3.1"
     compile "com.squareup.okhttp3:mockwebserver:4.3.1"
+    compile "com.squareup.okhttp3:logging-interceptor:4.3.1"
 
     //arrow
     compile "io.arrow-kt:arrow-core:${arrow_version}"
