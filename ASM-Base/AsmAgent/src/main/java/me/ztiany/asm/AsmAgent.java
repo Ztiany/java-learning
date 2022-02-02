@@ -1,8 +1,13 @@
-package me.ztiany.asm.agent;
+package me.ztiany.asm;
+
+import com.google.gson.Gson;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author ztiany
@@ -10,18 +15,17 @@ import java.security.ProtectionDomain;
  */
 public class AsmAgent implements ClassFileTransformer {
 
-    private final String agentArgs;
-    private final AsmTransformer asmTransformer = new AsmTransformer();
+    private final AsmTransformer mAsmTransformer;
 
     private AsmAgent(String agentArgs) {
-        System.out.println("AsmAgent: agentArgs = " + agentArgs);
-        this.agentArgs = agentArgs;
+        AgentParams agentParams = new Gson().fromJson(agentArgs, AgentParams.class);
+        mAsmTransformer = new AsmTransformer(agentParams);
     }
 
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) {
-        System.out.println("AsmAgent.transform: loader = " + loader + ", className = " + className + ", classBeingRedefined = " + classBeingRedefined + ", protectionDomain = " + protectionDomain);
-        return asmTransformer.transform(loader, className, classBeingRedefined, protectionDomain, classfileBuffer, agentArgs);
+        System.out.println("process: " + className);
+        return mAsmTransformer.transform(loader, className, classBeingRedefined, protectionDomain, classfileBuffer);
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {

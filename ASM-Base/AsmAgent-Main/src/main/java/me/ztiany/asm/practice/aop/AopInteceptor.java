@@ -1,4 +1,4 @@
-package me.ztiany.asm.sample;
+package me.ztiany.asm.practice.aop;
 
 public class AopInteceptor {
 

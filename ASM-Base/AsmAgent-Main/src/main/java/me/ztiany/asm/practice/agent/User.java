@@ -1,4 +1,4 @@
-package me.ztiany.asm.agenttest;
+package me.ztiany.asm.practice.agent;
 
 /**
  * @author ztiany

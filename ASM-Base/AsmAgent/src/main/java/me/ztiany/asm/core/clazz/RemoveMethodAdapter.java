@@ -1,31 +1,30 @@
-package me.ztiany.asm.agent.visitor;
+package me.ztiany.asm.core.clazz;
 
+import me.ztiany.asm.core.BaseClassAdapter;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
- * 移除一个类的字段
+ * 移除任意类的 void setAge(int) 方法。
  */
-class RemoveMethodAdapter extends ClassVisitor {
+public class RemoveMethodAdapter extends BaseClassAdapter {
 
-    private final String mName;
-    private final String mDesc;
+    private static final String NAME = "setAge";
+    private static final String DESC = "(I)V";
 
-    RemoveMethodAdapter(ClassVisitor cv, String mName, String mDesc) {
-        super(Opcodes.ASM5, cv);
-        System.out.println("cv = [" + cv + "], mName = [" + mName + "], mDesc = [" + mDesc + "]");
-        this.mName = mName;
-        this.mDesc = mDesc;
+    public RemoveMethodAdapter(ClassVisitor classVisitor, List<String> adapterParams) {
+        super(classVisitor, adapterParams);
     }
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         System.out.println("access = [" + access + "], name = [" + name + "], desc = [" + desc + "], signature = [" + signature + "], exceptions = [" + Arrays.toString(exceptions) + "]");
         //不转发到下一个链，就是移除该方法。因为类的生成最终是由 ClassWriter 处理的，我们不把这个方法的信息传递给它，自然它就不会生成这个方法。
-        if (name.equals(mName) && desc.equals(mDesc)) {
+        if (name.equals(NAME) && desc.equals(DESC)) {
             // do not delegate to next visitor -> this removes the method
             return null;
         }

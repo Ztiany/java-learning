@@ -1,4 +1,4 @@
-package me.ztiany.asm.sample;
+package me.ztiany.asm.practice.generator;
 
 import org.objectweb.asm.*;
 
