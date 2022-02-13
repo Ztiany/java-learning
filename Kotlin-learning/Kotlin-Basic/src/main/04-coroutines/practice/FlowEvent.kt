@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.collect
 
 suspend fun main() {
 
-    val sharedFlow = MutableSharedFlow<String>(0, 10, BufferOverflow.SUSPEND)
+    val sharedFlow = MutableSharedFlow<String>(10, 2, BufferOverflow.SUSPEND)
 
     val job = CoroutineScope(Dispatchers.Default).launch {
         log("collect")
@@ -19,11 +19,9 @@ suspend fun main() {
     }
 
     delay(1000)
-    sharedFlow.tryEmit("1")
-    sharedFlow.tryEmit("2")
-    sharedFlow.tryEmit("3")
-    sharedFlow.tryEmit("4")
-    sharedFlow.tryEmit("5")
+    for (i in 1..100) {
+        sharedFlow.tryEmit(i.toString())
+    }
     log("sent")
 
     job.join()

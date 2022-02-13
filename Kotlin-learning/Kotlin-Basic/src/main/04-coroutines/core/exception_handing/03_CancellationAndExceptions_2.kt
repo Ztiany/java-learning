@@ -44,7 +44,7 @@ fun main() = runBlocking {
             println("Second child throws an exception")
             //将会导致父协程被取消，即使加上 subHandler 也不起作用。
             throw ArithmeticException()
-            //throw CancellationException()，如果是抛出 CancellationException，那么不会有影响。
+            //throw CancellationException() //如果是抛出 CancellationException，那么不会有影响。
         }
 
         //父协程将得不到执行。

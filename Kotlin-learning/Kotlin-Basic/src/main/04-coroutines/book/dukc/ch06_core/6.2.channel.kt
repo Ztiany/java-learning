@@ -290,7 +290,7 @@ private suspend fun sequenceGeneratorByChannel() {
 ///////////////////////////////////////////////////////////////////////////
 // Channel 的内部结构
 ///////////////////////////////////////////////////////////////////////////
-private fun theInnerStructureOfChannel() {
+private suspend fun theInnerStructureOfChannel() {
 /*
     上面说到的序列生成器无法使用更上层的复合协程的各种能力，除此之外，序列生成器也不是线程安全的，而 Channel 却可以在并发场景下使用。
     而支持 Channel 胜任并发场景的是其内部的数据结构。
