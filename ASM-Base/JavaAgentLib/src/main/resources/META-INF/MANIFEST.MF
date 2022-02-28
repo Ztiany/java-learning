@@ -1,3 +1,5 @@
 Manifest-Version: 1.0
 Premain-Class: me.ztiany.instrumentation.GreetingFileTransformer
+Agent-Class: me.ztiany.instrumentation.GreetingFileTransformer
 Can-Redefine-Classes: true
+Can-Retransform-Classes: true

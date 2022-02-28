@@ -3,16 +3,11 @@ package me.ztiany.instrumentation;
 import org.apache.bcel.Repository;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ClassGen;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.InstructionFactory;
-import org.apache.bcel.generic.InstructionList;
-import org.apache.bcel.generic.MethodGen;
-import org.apache.bcel.generic.PUSH;
-import org.apache.bcel.generic.Type;
+import org.apache.bcel.generic.*;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
 import java.security.ProtectionDomain;
 
 /**
@@ -29,12 +24,31 @@ public class GreetingFileTransformer implements ClassFileTransformer {
     }
 
     /*
-        step1：注册
+        step1（JDK5）：注册
            该方法将由 JVM 调用，通过 Instrumentation 对象，我们可以注册一个类转换器，然后每当一个类被加载，都会调用 transform 方法。
     */
     public static void premain(String agentArgs, Instrumentation inst) {
-        System.out.printf("I've been called with options: \"%s\"\n", agentArgs);
+        System.out.printf("premain-I've been called with options: \"%s\"\n", agentArgs);
         inst.addTransformer(new GreetingFileTransformer(agentArgs));
+    }
+
+    /*
+    step1（JDK6）：注册
+       该方法将由 JVM 调用，通过 Instrumentation 对象，我们可以注册一个类转换器，然后每当一个类被加载，都会调用 transform 方法。
+*/
+    public static void agentmain(String agentArgs, Instrumentation inst) throws UnmodifiableClassException {
+        System.out.printf("agentmain-I've been called with options: \"%s\"\n", agentArgs);
+        inst.addTransformer(new GreetingFileTransformer(agentArgs), true);
+
+        Class classes[] = inst.getAllLoadedClasses();
+        for (int i = 0; i < classes.length; i++) {
+            System.out.println("try Reloading: " + classes[i].getName());
+            if (classes[i].getName().contains("JDK6AgentTest")) {
+                System.out.println("Reloading: " + classes[i].getName());
+                inst.retransformClasses(classes[i]);
+                break;
+            }
+        }
     }
 
     /*
@@ -51,35 +65,54 @@ public class GreetingFileTransformer implements ClassFileTransformer {
     ) {
         System.out.println("load->" + className);
 
-        if (!className.equals("me/ztiany/agent/test/jdk5/JDK5AgentTest")) {
-            return classfileBuffer;
-        }
-
-        try {
-            JavaClass clazz = Repository.lookupClass(className);
-            ClassGen cg = new ClassGen(clazz);
-            ConstantPoolGen cp = cg.getConstantPool();
-
-            for (Method method : clazz.getMethods()) {
-
-                if (method.getName().equals("getGreeting")) {
-                    MethodGen mg = new MethodGen(method, cg.getClassName(), cp);
-                    InstructionList il = new InstructionList();
-                    il.append(new PUSH(cp, this.agentArgs));
-                    il.append(InstructionFactory.createReturn(Type.STRING));
-                    mg.setInstructionList(il);
-                    mg.setMaxStack();
-                    mg.setMaxLocals();
-                    cg.replaceMethod(method, mg.getMethod());
+        if (className.equals("me/ztiany/agent/test/jdk5/JDK5AgentTest")) {
+            try {
+                JavaClass clazz = Repository.lookupClass(className);
+                ClassGen cg = new ClassGen(clazz);
+                ConstantPoolGen cp = cg.getConstantPool();
+                for (Method method : clazz.getMethods()) {
+                    if (method.getName().equals("getGreeting")) {
+                        MethodGen mg = new MethodGen(method, cg.getClassName(), cp);
+                        InstructionList il = new InstructionList();
+                        il.append(new PUSH(cp, this.agentArgs));
+                        il.append(InstructionFactory.createReturn(Type.STRING));
+                        mg.setInstructionList(il);
+                        mg.setMaxStack();
+                        mg.setMaxLocals();
+                        cg.replaceMethod(method, mg.getMethod());
+                    }
                 }
-
+                return cg.getJavaClass().getBytes();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-
-            return cg.getJavaClass().getBytes();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-        return null;
+
+
+        if (className.equals("me/ztiany/agent/test/jdk6/JDK6AgentTest")) {
+            try {
+                JavaClass clazz = Repository.lookupClass(className);
+                ClassGen cg = new ClassGen(clazz);
+                ConstantPoolGen cp = cg.getConstantPool();
+                for (Method method : clazz.getMethods()) {
+                    if (method.getName().equals("foo")) {
+                        MethodGen mg = new MethodGen(method, cg.getClassName(), cp);
+                        InstructionList il = new InstructionList();
+                        il.append(new PUSH(cp, 50));
+                        il.append(InstructionFactory.createReturn(Type.INT));
+                        mg.setInstructionList(il);
+                        mg.setMaxStack();
+                        mg.setMaxLocals();
+                        cg.replaceMethod(method, mg.getMethod());
+                    }
+                }
+                return cg.getJavaClass().getBytes();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return classfileBuffer;
     }
 
 }

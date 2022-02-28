@@ -1,5 +1,7 @@
 package me.ztiany.agent.test.jdk6;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Ztiany
  * Email ztiany3@gmail.com
@@ -7,9 +9,15 @@ package me.ztiany.agent.test.jdk6;
  */
 public class JDK6AgentTest {
 
-    /*todo*/
-    public static void main(String... args) {
+    public static void main(String... args) throws InterruptedException {
+        while (true) {
+            System.out.println(foo());
+            TimeUnit.SECONDS.sleep(3);
+        }
+    }
 
+    public static int foo() {
+        return 100; // 修改后 return 50;
     }
 
 }
