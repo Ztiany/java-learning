@@ -46,6 +46,12 @@ private fun read(b: Array<Byte>, off: Int = 0, len: Int = b.size) {
 
 }
 
+private fun testRead() {
+    read(arrayOf(0))
+    read(arrayOf(0), 0)
+    read(arrayOf(0), 0, 3)
+}
+
 /**
  * 命名参数：传入参数时可以指定参数名。
  *
