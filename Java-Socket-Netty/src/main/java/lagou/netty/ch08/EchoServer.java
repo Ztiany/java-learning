@@ -1,6 +1,7 @@
-package lagou.netty.ch05;
+package lagou.netty.ch08;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -8,25 +9,22 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpContentCompressor;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpServerCodec;
-import lagou.netty.ch02.HttpServerHandler;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
 
-public class HttpServer {
+public class EchoServer {
 
     public static void main(String[] args) {
         try {
-            new HttpServer().start(8088);
-        } catch (Exception e) {
+            new EchoServer().start(8088);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    private void start(int port) throws Exception {
+    private void start(int port) throws InterruptedException {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -39,19 +37,11 @@ public class HttpServer {
                         @Override
                         protected void initChannel(@NotNull SocketChannel ch) throws Exception {
                             ch.pipeline()
-                                    //InBoundHandler
-                                    //.addLast(new SampleInBoundHandler("SampleInBoundHandlerA", false))
-                                    //.addLast(new SampleInBoundHandler("SampleInBoundHandlerB", false))
-                                    //.addLast(new SampleInBoundHandler("SampleInBoundHandlerC", true))
-                                    .addLast(new SampleErrorInBoundHandler("SampleInBoundHandlerA", false))
-                                    .addLast(new SampleErrorInBoundHandler("SampleInBoundHandlerB", false))
-                                    .addLast(new SampleErrorInBoundHandler("SampleInBoundHandlerC", true))
-                                    //OutBoundHandler
-                                    .addLast(new SampleOutBoundHandler("SampleOutBoundHandlerA"))
-                                    .addLast(new SampleOutBoundHandler("SampleOutBoundHandlerB"))
-                                    .addLast(new SampleOutBoundHandler("SampleOutBoundHandlerC"))
-                                    //异常处理器
-                                    .addLast(new ExceptionHandler());
+                                    // 固定长度解码器
+                                    //.addLast(new FixedLengthFrameDecoder(10))
+                                    // 特殊字符解码器
+                                    .addLast(new DelimiterBasedFrameDecoder(10, true, true, Unpooled.copiedBuffer("&".getBytes())))
+                                    .addLast(new EchoServerInboundHandler());
                         }
                     })
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
@@ -64,6 +54,7 @@ public class HttpServer {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
+
     }
 
 }
