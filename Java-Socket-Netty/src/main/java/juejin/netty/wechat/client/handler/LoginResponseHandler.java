@@ -1,12 +1,16 @@
 package juejin.netty.wechat.client.handler;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import juejin.netty.wechat.protocol.request.LoginRequestPacket;
+import juejin.netty.wechat.protocol.request.MessageRequestPacket;
 import juejin.netty.wechat.protocol.response.LoginResponsePacket;
+import juejin.netty.wechat.protocol.response.MessageResponsePacket;
 import juejin.netty.wechat.utils.LoginUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.UUID;
 
@@ -59,7 +63,7 @@ import java.util.UUID;
 public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginResponsePacket> {
 
     @Override
-    public void channelActive(@NotNull ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(@NotNull ChannelHandlerContext ctx) {
         // 创建登录对象
         LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
         loginRequestPacket.setUserId(UUID.randomUUID().toString());
@@ -77,6 +81,11 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
         } else {
             System.out.println(new Date() + ": 客户端登录失败，原因：" + msg.getReason());
         }
+    }
+
+    @Override
+    public void channelInactive(@NotNull ChannelHandlerContext ctx) {
+        System.out.println("客户端连接被关闭!");
     }
 
 }

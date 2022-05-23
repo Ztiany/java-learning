@@ -8,6 +8,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
+import juejin.netty.wechat.codec.PacketDecoder;
+import juejin.netty.wechat.codec.PacketEncoder;
+import juejin.netty.wechat.protocol.PacketCodec;
+import juejin.netty.wechat.server.handler.AuthHandler;
+import juejin.netty.wechat.server.handler.LifecycleTestHandler;
+import juejin.netty.wechat.server.handler.LoginRequestHandler;
+import juejin.netty.wechat.server.handler.MessageRequestHandler;
 import org.jetbrains.annotations.NotNull;
 
 import static juejin.netty.wechat.Constant.PORT;
@@ -45,13 +52,23 @@ public class NettyServer {
                 .handler(new ChannelInitializer<NioServerSocketChannel>() {
                     @Override
                     protected void initChannel(@NotNull NioServerSocketChannel ch) {
-
+                        //nothing need to do.
                     }
                 })
                 // childHandler() 用于指定处理新连接数据的读写处理逻辑
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(@NotNull NioSocketChannel ch) {
                         // ch.pipeline() 返回的是和这条连接相关的逻辑处理链，采用了责任链模式
+                        ch.pipeline()
+                                //in-bound
+                                .addLast(new LifecycleTestHandler())//打印生命周期【测试用】
+                                .addLast(PacketCodec.newProtocolDecoder())//拆包
+                                .addLast(new PacketDecoder())//解码
+                                .addLast(new LoginRequestHandler())//处理登录请求
+                                .addLast(new AuthHandler())//鉴权
+                                .addLast(new MessageRequestHandler())//处理一般的消息
+                                //out-bound
+                                .addLast(new PacketEncoder());//编码
                     }
                 });
 

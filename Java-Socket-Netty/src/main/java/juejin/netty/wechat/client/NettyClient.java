@@ -13,9 +13,16 @@ import juejin.netty.wechat.client.handler.LoginResponseHandler;
 import juejin.netty.wechat.client.handler.MessageResponseHandler;
 import juejin.netty.wechat.codec.PacketDecoder;
 import juejin.netty.wechat.codec.PacketEncoder;
+import juejin.netty.wechat.protocol.PacketCodec;
+import juejin.netty.wechat.protocol.request.MessageRequestPacket;
+import juejin.netty.wechat.utils.LoginUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import static juejin.netty.wechat.Constant.*;
@@ -43,9 +50,10 @@ public class NettyClient {
                     public void initChannel(@NotNull SocketChannel ch) {
                         ch.pipeline()
                                 //in-bound
-                                .addLast(new PacketDecoder())
-                                .addLast(new MessageResponseHandler())
-                                .addLast(new LoginResponseHandler())
+                                .addLast(PacketCodec.newProtocolDecoder())//拆包
+                                .addLast(new PacketDecoder())//解码
+                                .addLast(new MessageResponseHandler())//消息响应处理
+                                .addLast(new LoginResponseHandler())//登录响应处理
                                 //out-bound
                                 .addLast(new PacketEncoder());
                     }
@@ -100,7 +108,32 @@ public class NettyClient {
     }
 
     private void startConsoleThread(Channel channel) {
+        new Thread(() -> readConsoleAndSend(channel)).start();
+    }
 
+    private void readConsoleAndSend(Channel channel) {
+        Scanner scanner = new Scanner(System.in);
+        String line;
+        System.out.println("输入消息发送至服务端: ");
+        while (!(line = scanner.nextLine()).equals("quit")) {
+            System.out.printf("read form console: %s\r\n", line);
+            if (LoginUtil.hasLogin(channel)) {
+                MessageRequestPacket packet = new MessageRequestPacket();
+                packet.setMessage(line);
+                channel.writeAndFlush(packet);
+            } else {
+                System.out.println("客户端还未登录，请稍等...");
+            }
+        }
+        scanner.close();
+    }
+
+    private void writeLotsData(Channel channel) {
+        for (int i = 0; i < 100; i++) {
+            MessageRequestPacket packet = new MessageRequestPacket();
+            packet.setMessage("你好，我是你的谁啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊");
+            channel.writeAndFlush(packet);
+        }
     }
 
 }

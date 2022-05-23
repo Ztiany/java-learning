@@ -1,6 +1,8 @@
 package juejin.netty.wechat.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import juejin.netty.wechat.protocol.command.Command;
 import juejin.netty.wechat.protocol.request.LoginRequestPacket;
 import juejin.netty.wechat.protocol.request.MessageRequestPacket;
@@ -94,6 +96,37 @@ public class PacketCodec {
 
         // 执行反序列化
         return serializer.deserialize(clazz, data);
+    }
+
+    private static final int MAGIC_NUM_LENGTH = 4;
+    private static final int VERSION_LENGTH = 1;
+    private static final int COMMAND_LENGTH = 1;
+    private static final int SERIALIZATION_LENGTH = 1;
+    private static final int DATA_LENGTH = 4;
+
+    /**
+     * 构建 LengthFieldBasedFrameDecoder 来解决粘包半包现象
+     */
+    public static LengthFieldBasedFrameDecoder newProtocolDecoder() {
+        return new LengthFieldBasedFrameDecoder(
+                Integer.MAX_VALUE,
+                MAGIC_NUM_LENGTH + VERSION_LENGTH + COMMAND_LENGTH + SERIALIZATION_LENGTH,
+                DATA_LENGTH
+        ) {
+
+            //这里的 decode() 方法中，第二个参数 in，每次传递进来的时候，均为一个数据包的开头。
+            @Override
+            protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
+                // 屏蔽非本协议的客户端【getInt 方法不改变索引】
+                // 设计魔数的原因是为了尽早屏蔽非本协议的客户端，通常在第一个 handler 处理这段逻辑。
+                if (in.getInt(in.readerIndex()) != MAGIC_NUMBER) {
+                    System.err.println("MAGIC_NUMBER not match.");
+                    ctx.channel().close();
+                    return null;
+                }
+                return super.decode(ctx, in);
+            }
+        };
     }
 
 }
