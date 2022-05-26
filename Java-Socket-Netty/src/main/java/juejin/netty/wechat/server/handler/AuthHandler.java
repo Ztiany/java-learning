@@ -1,8 +1,9 @@
 package juejin.netty.wechat.server.handler;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import juejin.netty.wechat.utils.LoginUtil;
+import juejin.netty.wechat.utils.SessionUtil;
 import org.jetbrains.annotations.NotNull;
 
 /*
@@ -16,11 +17,18 @@ import org.jetbrains.annotations.NotNull;
         （1）AuthHandler 继承自 ChannelInboundHandlerAdapter，覆盖了 channelRead() 方法，表明它可以处理所有类型的数据。
         （2）在 channelRead() 方法里面，在决定是否把读到的数据传递到后续指令处理器之前，首先会判断是否登录成功，如果未登录，直接强制关闭连接【当然生产环境的逻辑会更加复杂】。
   */
+@ChannelHandler.Sharable
 public class AuthHandler extends ChannelInboundHandlerAdapter {
+
+    public static final AuthHandler INSTANCE = new AuthHandler();
+
+    private AuthHandler() {
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, @NotNull Object msg) throws Exception {
-        if (!LoginUtil.hasLogin(ctx.channel())) {
+        System.out.println("AuthHandler 收到消息：" + msg);
+        if (!SessionUtil.hasLogin(ctx.channel())) {
             ctx.channel().close();
         } else {
             /*
@@ -40,13 +48,12 @@ public class AuthHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) {
-        //这里主要用于演示
-        if (LoginUtil.hasLogin(ctx.channel())) {
+        //这里主要用于打印一些信息，不影响实际功能
+        if (SessionUtil.hasLogin(ctx.channel())) {
             System.out.println("当前连接登录验证完毕，无需再次验证, AuthHandler 被移除");
         } else {
             System.out.println("无登录验证，强制关闭连接!");
         }
-
     }
 
 }

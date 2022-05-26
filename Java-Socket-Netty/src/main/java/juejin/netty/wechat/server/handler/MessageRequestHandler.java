@@ -1,20 +1,47 @@
 package juejin.netty.wechat.server.handler;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import juejin.netty.wechat.protocol.request.MessageRequestPacket;
-import juejin.netty.wechat.protocol.response.MessageResponsePacket;
+import juejin.netty.wechat.common.protocol.request.MessageRequestPacket;
+import juejin.netty.wechat.common.protocol.response.MessageResponsePacket;
+import juejin.netty.wechat.common.session.Session;
+import juejin.netty.wechat.utils.SessionUtil;
 
-import java.util.Date;
 
+@ChannelHandler.Sharable
 public class MessageRequestHandler extends SimpleChannelInboundHandler<MessageRequestPacket> {
+
+    public static final MessageRequestHandler INSTANCE = new MessageRequestHandler();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MessageRequestPacket msg) {
+        long begin = System.currentTimeMillis();
+
+        // 1.拿到消息发送方的会话信息
+        Session session = SessionUtil.getSession(ctx.channel());
+
+        // 2.通过消息发送方的会话信息构造要发送的消息
         MessageResponsePacket messageResponsePacket = new MessageResponsePacket();
-        System.out.println(new Date() + ": 收到客户端消息: " + msg.getMessage());
-        messageResponsePacket.setMessage("服务端回复【" + msg.getMessage() + "】");
-        ctx.channel().writeAndFlush(messageResponsePacket);
+        messageResponsePacket.setFromUserId(session.getUserId());
+        messageResponsePacket.setFromUserName(session.getUserName());
+        messageResponsePacket.setMessage(msg.getMessage());
+
+        // 3.拿到消息接收方的 channel
+        Channel toUserChannel = SessionUtil.getChannel(msg.getToUserId());
+
+        // 4.将消息发送给消息接收方
+        if (toUserChannel != null && SessionUtil.hasLogin(toUserChannel)) {
+            toUserChannel.writeAndFlush(messageResponsePacket).addListener(future -> {
+                if (future.isDone()) {
+                    //考试统计
+                    long time = System.currentTimeMillis() - begin;
+                }
+            });
+        } else {
+            System.err.println("[" + session.getUserId() + "] 不在线，发送失败!");
+        }
     }
 
 }

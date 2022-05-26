@@ -8,13 +8,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
-import juejin.netty.wechat.codec.PacketDecoder;
-import juejin.netty.wechat.codec.PacketEncoder;
-import juejin.netty.wechat.protocol.PacketCodec;
-import juejin.netty.wechat.server.handler.AuthHandler;
-import juejin.netty.wechat.server.handler.LifecycleTestHandler;
-import juejin.netty.wechat.server.handler.LoginRequestHandler;
-import juejin.netty.wechat.server.handler.MessageRequestHandler;
+import juejin.netty.wechat.common.codec.IMCodecHandler;
+import juejin.netty.wechat.common.handler.HeartbeatRequestHandler;
+import juejin.netty.wechat.common.handler.IMIdleStateHandler;
+import juejin.netty.wechat.common.protocol.PacketCodec;
+import juejin.netty.wechat.server.handler.*;
 import org.jetbrains.annotations.NotNull;
 
 import static juejin.netty.wechat.Constant.PORT;
@@ -58,17 +56,30 @@ public class NettyServer {
                 // childHandler() 用于指定处理新连接数据的读写处理逻辑
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(@NotNull NioSocketChannel ch) {
-                        // ch.pipeline() 返回的是和这条连接相关的逻辑处理链，采用了责任链模式
+                        /*
+                        ch.pipeline() 返回的是和这条连接相关的逻辑处理链，采用了责任链模式。
+
+                        每建立一个新的连接，这里的代码就被会被执行，对于服务端来说，因为可能承接成千上万个客户端的连接，因此这里可以做一些特定的优化
+                            （1）压缩 handler 的链条，利用一个 Handler 来管理那些没有状态的 Handler，这个可以压缩 handler 的传播链条，从而优化响应速度。【比如这里的 ComposeHandler】
+                            （2）没有状态的 Handler 可以用单例来实现，从而避免为每个连接创建一个对象。
+                         */
                         ch.pipeline()
-                                //in-bound
-                                .addLast(new LifecycleTestHandler())//打印生命周期【测试用】
-                                .addLast(PacketCodec.newProtocolDecoder())//拆包
-                                .addLast(new PacketDecoder())//解码
-                                .addLast(new LoginRequestHandler())//处理登录请求
-                                .addLast(new AuthHandler())//鉴权
-                                .addLast(new MessageRequestHandler())//处理一般的消息
-                                //out-bound
-                                .addLast(new PacketEncoder());//编码
+                                //打印生命周期【测试用】
+                                //.addLast(new LifecycleTestHandler())
+                                //空闲检测
+                                .addLast(new IMIdleStateHandler())
+                                //拆包
+                                .addLast(PacketCodec.newProtocolDecoder())
+                                //编解解码
+                                .addLast(IMCodecHandler.INSTANCE)
+                                //处理登录请求
+                                .addLast(LoginRequestHandler.INSTANCE)
+                                //处理心跳消息
+                                .addLast(HeartbeatRequestHandler.INSTANCE)
+                                //鉴权
+                                .addLast(AuthHandler.INSTANCE)
+                                //其他需要鉴权的 Handler
+                                .addLast(ComposeHandler.INSTANCE);
                     }
                 });
 

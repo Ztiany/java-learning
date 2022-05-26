@@ -1,39 +1,39 @@
 package juejin.netty.wechat.client;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
-import juejin.netty.wechat.client.handler.LoginResponseHandler;
-import juejin.netty.wechat.client.handler.MessageResponseHandler;
-import juejin.netty.wechat.codec.PacketDecoder;
-import juejin.netty.wechat.codec.PacketEncoder;
-import juejin.netty.wechat.protocol.PacketCodec;
-import juejin.netty.wechat.protocol.request.MessageRequestPacket;
-import juejin.netty.wechat.utils.LoginUtil;
+import juejin.netty.wechat.client.console.ConsoleCommandManager;
+import juejin.netty.wechat.client.console.LoginConsoleCommand;
+import juejin.netty.wechat.client.handler.*;
+import juejin.netty.wechat.common.codec.PacketDecoder;
+import juejin.netty.wechat.common.codec.PacketEncoder;
+import juejin.netty.wechat.common.handler.HeartbeatTimerHandler;
+import juejin.netty.wechat.common.handler.IMIdleStateHandler;
+import juejin.netty.wechat.common.protocol.PacketCodec;
+import juejin.netty.wechat.utils.SessionUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import static juejin.netty.wechat.Constant.*;
 
 public class NettyClient {
 
+    private static Thread consoleThread;
+
     public static void main(String[] args) {
-        new NettyClient().start();
+        start();
     }
 
-    private void start() {
+    private static void start() {
         // 创建事件循环
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         // 创建启动器
@@ -50,12 +50,21 @@ public class NettyClient {
                     public void initChannel(@NotNull SocketChannel ch) {
                         ch.pipeline()
                                 //in-bound
+                                .addLast(new CheckHandler())//空闲检测
+                                .addLast(new IMIdleStateHandler())//空闲检测
                                 .addLast(PacketCodec.newProtocolDecoder())//拆包
                                 .addLast(new PacketDecoder())//解码
-                                .addLast(new MessageResponseHandler())//消息响应处理
                                 .addLast(new LoginResponseHandler())//登录响应处理
+                                .addLast(new MessageResponseHandler())//消息响应处理
+                                .addLast(new CreateGroupResponseHandler())//建群响应处理
+                                .addLast(new JoinGroupResponseHandler())//加入群响应处理
+                                .addLast(new ListGroupMembersResponseHandler())//列出群成员响应处理
+                                .addLast(new GroupMessageResponseHandler())//群消息响应处理
+                                .addLast(new LogoutResponseHandler())//登出响应处理
                                 //out-bound
-                                .addLast(new PacketEncoder());
+                                .addLast(new PacketEncoder())//编码
+                                //发送心跳包
+                                .addLast(new HeartbeatTimerHandler());
                     }
                 });
 
@@ -82,14 +91,14 @@ public class NettyClient {
     /**
      * 通常情况下，连接建立失败不会立即重新连接，而是会通过一个指数退避的方式，比如每隔 1 秒、2 秒、4 秒、8 秒，以 2 的幂次来建立连接，然后到达一定次数之后就放弃连接
      */
-    private void doConnect(Bootstrap bootstrap, String host, int port, int retry) {
+    private static void doConnect(Bootstrap bootstrap, String host, int port, int retry) {
         // 4.建立连接
         bootstrap.connect(host, port).addListener(future -> {
             if (future.isSuccess()) {
                 System.out.println("连接成功!");
                 Channel channel = ((ChannelFuture) future).channel();
                 // 连接成功之后，启动控制台线程
-                startConsoleThread(channel);
+                startConsoleThread(bootstrap, channel);
             } else if (retry == 0) {
                 System.err.println("重试次数已用完，放弃连接！");
             } else {
@@ -107,32 +116,62 @@ public class NettyClient {
         });
     }
 
-    private void startConsoleThread(Channel channel) {
-        new Thread(() -> readConsoleAndSend(channel)).start();
+    private static void startConsoleThread(Bootstrap bootstrap, Channel channel) {
+        ConsoleCommandManager consoleCommandManager = new ConsoleCommandManager();
+        LoginConsoleCommand loginConsoleCommand = new LoginConsoleCommand();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        consoleThread = new Thread(() -> readConsoleAndSend(bootstrap, channel, bufferedReader, consoleCommandManager, loginConsoleCommand));
+        consoleThread.start();
     }
 
-    private void readConsoleAndSend(Channel channel) {
-        Scanner scanner = new Scanner(System.in);
-        String line;
-        System.out.println("输入消息发送至服务端: ");
-        while (!(line = scanner.nextLine()).equals("quit")) {
-            System.out.printf("read form console: %s\r\n", line);
-            if (LoginUtil.hasLogin(channel)) {
-                MessageRequestPacket packet = new MessageRequestPacket();
-                packet.setMessage(line);
-                channel.writeAndFlush(packet);
+    private static void readConsoleAndSend(Bootstrap bootstrap, Channel channel, BufferedReader bufferedReader, ConsoleCommandManager consoleCommandManager, LoginConsoleCommand loginConsoleCommand) {
+        while (!clientExited) {
+            if (!SessionUtil.hasLogin(channel)) {
+                try {
+                    loginConsoleCommand.exec(bufferedReader, channel);
+                } catch (InterruptedException e) {
+                    break;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
-                System.out.println("客户端还未登录，请稍等...");
+                try {
+                    consoleCommandManager.exec(bufferedReader, channel);
+                } catch (InterruptedException e) {
+                    break;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        scanner.close();
+
+        try {
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stop(bootstrap.config().group(), channel);
     }
 
-    private void writeLotsData(Channel channel) {
-        for (int i = 0; i < 100; i++) {
-            MessageRequestPacket packet = new MessageRequestPacket();
-            packet.setMessage("你好，我是你的谁啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊");
-            channel.writeAndFlush(packet);
+    private static void stop(EventLoopGroup eventLoopGroup, Channel channel) {
+        ChannelFuture channelFuture = channel.close().awaitUninterruptibly();
+        //you have to close eventLoopGroup as well
+        eventLoopGroup.shutdownGracefully();
+        channelFuture.addListener(future -> System.out.println("client exited"));
+    }
+
+    private volatile static boolean clientExited = false;
+
+    public static void exit() {
+        if (clientExited/*not safe but enough.*/) {
+            return;
+        }
+
+        System.out.println("client exit");
+        clientExited = true;
+        if (consoleThread != null) {
+            consoleThread.interrupt();
         }
     }
 
