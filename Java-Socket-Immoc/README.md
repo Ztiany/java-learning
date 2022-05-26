@@ -717,7 +717,7 @@ public int writeTo(SocketChannel socketChannel) throws IOException {
 1. 引入直流传输。
 2. 为支持直流传输，引入桥接数据。
 
-## 9、l11-chat-room-v5-fixed：【性能优化与 bug 修复】
+## 9、l12-chat-room-v5-fixed：【性能优化与 bug 修复】
 
 多线程调度瓶颈：
 
@@ -725,7 +725,7 @@ public int writeTo(SocketChannel socketChannel) throws IOException {
 2. 并行-多线程-数量并非越多越好。
 3. 对于单核计算机而言，是通过 CPU 切换时间片实现多线程调度，但并非多线程并行-实则串行。
 4. 对于多核 CPU，但有临界值存在，则需要尽可能少的长时间占用临界资源。
-5. 司步块缩小范围，或同步块让线程独占。
+5. 同步块缩小范围，或同步块让线程独占。
 6. 多 Selector 代替单 Selector，Selector 内部自循环自消费。
 
 ### 压测程序
@@ -797,7 +797,9 @@ public boolean postSendAsync() throws IOException {
 
 ### IoProvider 的优化【多线程任务窃取】
 
-新增 StealingService 实现，优化效果：
+新增 StealingService 实现，优化效果： 
+
+- [ ] TODO
 
 ## 10、内存复用优化
 

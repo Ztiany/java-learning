@@ -2,5 +2,5 @@
 
 步骤：
 
-1. 本地运行[Server端](../Java-Socket-Study/README.md)
-2. 获取本地 ip 地址，AppContract 中的 SERVER_ADDRESS 改为本地 ip 地址。
+1. 本地 PC 运行[Server端](../Java-Socket-Immoc/README.md)
+2. 使用 AndroidStudio 开发此项目，获取本地 ip 地址，并在 AppContract 中的 SERVER_ADDRESS 填写本地 IP 地址，最后在 Android 手机上运行此项目。
