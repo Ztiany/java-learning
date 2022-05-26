@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-import foo.Foo;
+import l9.v2.foo.Foo;
 
 /**
  * @author Ztiany
@@ -15,7 +15,7 @@ public class FooTest {
 
     @Test
     public void testFoo() {
-        File client = Foo.getCacheDir("client");
+        File client = Foo.getCacheDir("l5/client");
         File randomTemp = Foo.createRandomTemp(client);
         System.out.println(randomTemp.getAbsolutePath());
     }

@@ -1,25 +1,24 @@
-# [慕课网实战《Socket网络编程进阶与实战》](https://coding.imooc.com/down/286.html) 学习代码
+# [慕课网实战《Socket 网络编程进阶与实战》](https://coding.imooc.com/learn/list/286.html) 学习 + 服务端代码
 
 笔记参考
 
-- [有道云笔记](http://note.youdao.com/noteshare?id=8489412fc4e17619d1247ba522d8d373&sub=AFF5FA73188948D7BB9C652744D0CB57) 
 - [讨论专区](https://coding.imooc.com/learn/qa/286.html)
 
 码列表如下：
 
 ## 1、l2-l6：BIO 数据传输演示
 
-### l2：模拟服务端和客户端【Socket网络编程快速入门】
+### l2：模拟服务端和客户端【Socket 网络编程快速入门】
 
 - Client 客户端
 - Server 服务端
 
-### l3：upd API 示例【Socket UDP快速入门】
+### l3：upd API 示例【Socket UDP 快速入门】
 
 1. UDPProvider：服务提供端，监听 UDP 广播，回复自己的地址和一个特定的 sn。
 2. UDPSearcher：服务搜索端，发送一个广播，然后与解析广播的回复。
 
-### l4：tcp API 示例【Socket TCP快速入门】
+### l4：tcp API 示例【Socket TCP 快速入门】
 
 - Client 客户端【实例中涉及到 Client Socket 的详细配置】
 - Server 服务端【实例中涉及到 ServerSocket 的详细配置】
@@ -130,7 +129,7 @@ try{
 ClientHandler(SocketChannel client,ClientHandlerCallback clientHandlerCallback)throws IOException{
         mClient=client;
         mClientHandlerCallback=Objects.requireNonNull(clientHandlerCallback);
-        
+
         //创建连接器并设置
         mConnector=new Connector(){
             @Override
@@ -138,7 +137,7 @@ ClientHandler(SocketChannel client,ClientHandlerCallback clientHandlerCallback)t
                 super.onChannelClosed(channel);
                 exitBySelf();
             }
-            
+
             @Override
             protected void onReceiveNewMessage(String newMessage){
                 super.onReceiveNewMessage(newMessage);
@@ -221,7 +220,7 @@ public class IoArgs {
     public String bufferString() {
         return new String(byteBuffer, 0, buffer.position() /*- CharUtils.LINE_BREAK_LENGTH*/ /*丢弃换行符*/);
     }
-    
+
     ..
 }
 ```
@@ -809,7 +808,7 @@ public boolean postSendAsync() throws IOException {
 
 ![image](images/c6.png)
 
-代码参考 [Java-Socket-Latest](../Java-Socket-Latest/README.md)。
+代码参考 [imooc-java-socket](https://github.com/Ztiany/imooc-java-socket) 。
 
 ## 11、总结与后续后话
 
