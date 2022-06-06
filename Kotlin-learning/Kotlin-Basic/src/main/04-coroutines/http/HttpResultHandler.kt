@@ -1,8 +1,10 @@
-package practice
+package http
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
 import io.reactivex.Observable
+import io.reactivex.functions.Function
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -12,7 +14,19 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
+import java.util.Optional
 
+
+suspend fun main() {
+    //testAPICall()
+    //testNullableAPICall()
+    //testRxJavaCall()
+    testReflecting()
+}
+
+///////////////////////////////////////////////////////////////////////////
+// API Call
+///////////////////////////////////////////////////////////////////////////
 private val gson = Gson()
 
 private interface AccountApi {
@@ -21,30 +35,16 @@ private interface AccountApi {
     suspend fun login(@Body loginRequest: LoginRequest): HttpResult<LoginResponse>
 
     @POST("user/v1/client/login")
-    fun loginRx(@Body loginRequest: LoginRequest): Observable<HttpResult<LoginResponse>>
+    fun loginRx(@Body loginRequest: LoginRequest): Observable<HttpResult<LoginResponse?>>
 
     @POST("user/v1/client/login")
     suspend fun loginNullable(@Body loginRequest: LoginRequest): HttpResult<LoginResponse?>
 
 }
 
-suspend fun main() {
-    //testAPICall()
-    //testNullableAPICall()
-    testRxJavaCall()
-}
-
-fun testRxJavaCall() {
-    serverAPI.loginRx(request).subscribe({
-        println("testRxJavaCall-success: $it")
-    }, {
-        println("testRxJavaCall-error: $it")
-    })
-}
-
 private suspend fun testAPICall() {
     try {
-        val loginResponse = callAPI(buildRealCall())
+        val loginResponse = callAPI(buildRealCall(), true)
         println("testAPICall-success: $loginResponse")
     } catch (e: Exception) {
         println("testAPICall-error: $e")
@@ -53,41 +53,40 @@ private suspend fun testAPICall() {
 
 private suspend fun testNullableAPICall() {
     try {
-        val loginResponse = callAPINullable(buildRealCallNullable())
+        val loginResponse = callAPI(buildRealCallNullable(), false)
         println("testNullableAPICall-success: $loginResponse")
     } catch (e: Exception) {
         println("testNullableAPICall-error: $e")
     }
 }
 
+fun testRxJavaCall() {
+    serverAPI.loginRx(request).onErrorResumeNext(Function<Throwable, Observable<HttpResult<LoginResponse?>>> {
+        Observable.error(
+            transformHttpException(it)
+        )
+    }).map {
+        if (!it.isSuccess) {
+            onApiError(it)
+            throw createApiException(it)
+        }
+        if (it.data == null) {
+            Optional.empty<LoginResponse>()
+        } else {
+            Optional.of<LoginResponse>(it.data)
+        }
+    }.subscribe({
+        println("testRxJavaCall-success: $it")
+    }, {
+        println("testRxJavaCall-error: $it")
+    })
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // 网络调用封装
 ///////////////////////////////////////////////////////////////////////////
-private suspend fun <T> callAPINullable(
-    call: suspend () -> Result<T>
-): T? {
-
-    val result: Result<T>
-
-    try {
-        result = call.invoke()
-    } catch (throwable: Throwable) {
-        throw transformHttpException(throwable)
-    }
-
-    println("callAPI result = $result")
-    return if (isErrorDataStub(result)) {//服务器数据格式错误
-        throw ServerErrorException(ServerErrorException.SERVER_DATA_ERROR)
-    } else if (!result.isSuccess) { //检测响应码是否正确
-        onApiError(result)
-        throw createApiException(result)
-    } else {
-        result.data
-    }
-}
-
-private suspend fun <T : Any> callAPI(
-    call: suspend () -> Result<T>
+private suspend fun <T> callAPI(
+    call: suspend () -> Result<T>, requireNullData: Boolean
 ): T {
 
     val result: Result<T>
@@ -99,13 +98,14 @@ private suspend fun <T : Any> callAPI(
     }
 
     println("callAPI result = $result")
-    return if (isErrorDataStub(result)) {//服务器数据格式错误
-        throw ServerErrorException(ServerErrorException.SERVER_DATA_ERROR)
-    } else if (!result.isSuccess) { //检测响应码是否正确
+    return if (!result.isSuccess) { //检测响应码是否正确
         onApiError(result)
         throw createApiException(result)
     } else {
-        result.data ?: throw ServerErrorException(ServerErrorException.NO_DATA_ERROR)
+        if (requireNullData && result.data == null) {
+            throw ServerErrorException(ServerErrorException.NO_DATA_ERROR)
+        }
+        result.data
     }
 }
 
@@ -124,13 +124,11 @@ private fun transformHttpException(throwable: Throwable): Throwable {
     return if (throwable is HttpException && !(throwable.code() >= 500)) {
         val errorBody = throwable.response()?.errorBody()
         if (errorBody == null) {
-            newNetworkErrorException()
+            throwable
         } else {
-            parseErrorBody(errorBody.string()) ?: newNetworkErrorException()
+            parseErrorBody(errorBody.string()) ?: throwable
         }
-    } else {
-        newNetworkErrorException()
-    }
+    } else throwable
 }
 
 private fun parseErrorBody(string: String): APIErrorException? {
@@ -143,49 +141,23 @@ private fun parseErrorBody(string: String): APIErrorException? {
     }
 }
 
-private fun newNetworkErrorException() = if (isConnected()) {
-    //有连接无数据，服务器错误
-    ServerErrorException(ServerErrorException.UNKNOW_ERROR)
-} else {
-    //无连接网络错误
-    NetworkErrorException()
-}
-
-private fun isConnected(): Boolean {
-    return true
-}
-
 private class APIErrorException(
     private val code: Int, message: String
 ) : Exception(message) {
-
     override fun toString(): String {
         return "APIErrorException(code=$code, message=${message})"
     }
-
 }
 
-private class ServerErrorException(private val serverDataError: Int) : Exception("服务器错误") {
+class ServerErrorException(private val serverDataError: Int) : RuntimeException("服务器错误") {
     companion object {
         const val SERVER_DATA_ERROR = 1
-        const val UNKNOW_ERROR = 2
         const val NO_DATA_ERROR = 3
     }
 
     override fun toString(): String {
         return "ServerErrorException(code=$serverDataError, message=${message})"
     }
-
-}
-
-private class NetworkErrorException : Exception() {
-    override fun toString(): String {
-        return "NetworkErrorException)"
-    }
-}
-
-private fun <T> isErrorDataStub(result: Result<T>): Boolean {
-    return false
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -213,7 +185,9 @@ private fun buildRealCallNullable(): suspend () -> Result<LoginResponse?> {
 //假数据
 //private const val FAKE_BODY = "{\"status\":0,\"msg\":\"消息\"}"
 //private const val FAKE_BODY = "{\"status\":0,\"msg\":\"消息\",\"data\":null}"
-private const val FAKE_BODY = "{\"status\":0,\"msg\":\"消息\",\"data\":[]}"
+//private const val FAKE_BODY = "{\"status\":0,\"msg\":\"消息\",\"data\":[]}"
+private const val FAKE_BODY = "{\"status\":0,\"msg\":\"消息\",\"data\":{}}"
+//private const val FAKE_BODY = "{\"status\":20,\"msg\":\"API 错误\"}"
 
 private val serverAPI by lazy {
 
@@ -222,6 +196,7 @@ private val serverAPI by lazy {
             println(message)
         }
     })
+
     httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
     val retrofit = retrofit2.Retrofit.Builder().client(
@@ -245,18 +220,17 @@ private val serverAPI by lazy {
             //模拟
             .addInterceptor {
                 val response = it.proceed(it.request())
-                response.newBuilder().code(200).message("OK").body(FAKE_BODY.toResponseBody()).build()
+                response.newBuilder().code(200).message("OK").body(FAKE_BODY.toResponseBody())
+                    //response.newBuilder().code(455).message("Internal Error").body(FAKE_BODY.toResponseBody())
+                    .build()
             }.build()
     ).baseUrl("http://demo.ysj.vclusters.com/api/")
         //json
-        //.addConverterFactory(GsonConverterFactory.create())
         .addConverterFactory(ErrorJsonLenientConverterFactory(GsonConverterFactory.create(gson)))
         //rx call
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
 
-    retrofit.create(
-        AccountApi::class.java
-    )
+    retrofit.create(AccountApi::class.java)
 }
 
 private data class LoginRequest(
@@ -314,34 +288,18 @@ data class ErrorResult(
 )
 
 ///////////////////////////////////////////////////////////////////////////
-// 测试泛型声明
-///////////////////////////////////////////////////////////////////////////
-
-private fun testHttpResult(httpResult: HttpResult<String>) {
-    val data: String = "null"
-    processHttpResult(HttpResult(data, 1, ""))
-}
-
-private fun processHttpResult(httpResult: HttpResult<String>) {
-    val data = httpResult.data
-}
-
-///////////////////////////////////////////////////////////////////////////
 // 反射与构造器调用
 ///////////////////////////////////////////////////////////////////////////
 
-/**提供了默认构造器，则 GSON 用默认构造器来创建对象。*/
-private data class HttpResult2<T>(
-    @SerializedName("data") var data: T? = null,
-    @SerializedName("status") var code: Int = 1,
-    @SerializedName("msg") var message: String = ""
-) {
-    init {
-        println("HttpResult2 Constructor Called.")
-    }
-}
-
 private fun testReflecting() {
-    gson.fromJson(FAKE_BODY, HttpResult2::class.java)
+    val type = object : TypeToken<HttpResult<Void>>() {
+
+    }.type
+
+    println(type)
+
+    val data: HttpResult<String> = gson.fromJson(FAKE_BODY, type)
+
+    println(data)
 }
 

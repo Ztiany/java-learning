@@ -1,4 +1,4 @@
-package practice;
+package http;
 
 import io.reactivex.annotations.NonNull;
 import okhttp3.RequestBody;
@@ -42,9 +42,8 @@ public class ErrorJsonLenientConverterFactory extends Converter.Factory {
         return (Converter<ResponseBody, Object>) value -> {
             try {
                 return delegateConverter.convert(value);
-            } catch (Exception e/*防止闪退：JsonSyntaxException、IOException or MalformedJsonException*/) {
-                //e.printStackTrace();
-                throw e;
+            } catch (Exception e/*JsonSyntaxException、IOException or MalformedJsonException*/) {
+                throw new ServerErrorException(ServerErrorException.SERVER_DATA_ERROR);
             }
         };
     }
