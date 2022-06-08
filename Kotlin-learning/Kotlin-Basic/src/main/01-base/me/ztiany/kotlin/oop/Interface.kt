@@ -8,7 +8,6 @@ package me.ztiany.kotlin.oop
  *  2，一个类或者对象可以实现一个或多个接口。
  *  3，可以在接口中定义属性。在接口中声明的属性要么是抽象的，要么提供 访问器的实现。
  *      在接口中声明的属性不能有幕后字段（backing field），因此接口中声明的访问器不能引用它们。
- *
  */
 private interface InterfaceSample {
 
@@ -26,8 +25,9 @@ private interface InterfaceSample {
     //提供访问器的
     val propertyWithImplementation: String
         get() = "foo"
-}
 
+    var name: String
+}
 
 private interface InterfaceA {
 
@@ -73,7 +73,6 @@ private class ImplAB : InterfaceA, InterfaceB {
 
 
 fun main(args: Array<String>) {
-
     val implA = ImplA()
     val implAB = ImplAB()
 
