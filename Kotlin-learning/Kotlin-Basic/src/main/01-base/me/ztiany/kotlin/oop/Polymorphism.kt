@@ -3,8 +3,8 @@ package me.ztiany.kotlin.oop
 /**
  * 多态：熟悉 Java 的开发者对多态应该不会陌生，它是面向对象程序设计（OOP）的一个重要特征。
  *
- * - 当我们用一个子类继承一个父类的时候，这就是子类型多态（Subtypepolymorphism）。
- * - 另一种熟悉的多态是参数多态（Parametricpolymorphism），泛型就是其最常见的形式。
+ * - 当我们用一个子类继承一个父类的时候，这就是子类型多态（Subtype Polymorphism）。
+ * - 另一种熟悉的多态是参数多态（Parametric Polymorphism），泛型就是其最常见的形式。
  * - 此外，也许你还会想到 C++ 中的运算符重载，我们可以用特设多态（Ad-hocpolymorphism）来描述它。
  *
  * 相比子类型多态和参数多态，可能开发者对特设多态会感到有些许陌生。其实这是一种更加灵活的多态技术，在 Kotlin中 ，一些有趣的语言特性，

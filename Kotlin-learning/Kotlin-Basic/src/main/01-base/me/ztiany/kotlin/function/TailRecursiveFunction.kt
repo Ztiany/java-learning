@@ -3,10 +3,6 @@ package me.ztiany.kotlin.function
 
 /**
  *尾递归函数
- *
- * @author Ztiany
- *          Email ztiany3@gmail.com
- *          Date 17.6.3 0:16
  */
 fun main(args: Array<String>) {
     val point = findFixPoint(1.0)

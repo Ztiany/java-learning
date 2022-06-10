@@ -1,4 +1,4 @@
-package me.ztiany.kotlin.oop
+package me.ztiany.kotlin.function
 
 /**
  * 在计算机编程，特别是函数式编程与类型理论中，ADT 是一种组合类型（composite type）。例如，一个类型由其他类型组合而成。
