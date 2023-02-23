@@ -116,9 +116,10 @@ public class PacketCodec {
     }
 
     /**
-     * 构建 LengthFieldBasedFrameDecoder 来解决粘包半包现象。LengthFieldBasedFrameDecoder 有内部状态，所有不能被多个 Channel 共享。
+     * 构建 LengthFieldBasedFrameDecoder 来解决粘包半包现象。LengthFieldBasedFrameDecoder 有内部状态，因此不能被多个 Channel 共享。
      */
     public static LengthFieldBasedFrameDecoder newProtocolDecoder() {
+
         return new LengthFieldBasedFrameDecoder(
                 Integer.MAX_VALUE,
                 MAGIC_NUM_LENGTH + VERSION_LENGTH + COMMAND_LENGTH + SERIALIZATION_LENGTH,

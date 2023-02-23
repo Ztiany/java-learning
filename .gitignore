@@ -4,11 +4,8 @@ build
 *.class
 .mtj.tmp/
 # Package Files #
-*.jar
 *.war
 *.ear
-
-
 
 # Object files
 *.o

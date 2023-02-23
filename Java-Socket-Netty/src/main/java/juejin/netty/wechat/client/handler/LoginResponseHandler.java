@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
                     }
                 }
 
-        我们可以通过给 pipeline 添加多个 handler(ChannelInboundHandlerAdapter的子类) 来解决在单个 ChannelInboundHandlerAdapter
+        我们可以通过给 pipeline 添加多个 handler(ChannelInboundHandlerAdapter 的子类) 来解决在单个 ChannelInboundHandlerAdapter
         内过多的 if else 问题，让每个 ChannelInboundHandlerAdapter 处理一个特定的消息，此时每个 ChannelInboundHandlerAdapter 的 channelRead
         方法可以按如下方式实现：
 
