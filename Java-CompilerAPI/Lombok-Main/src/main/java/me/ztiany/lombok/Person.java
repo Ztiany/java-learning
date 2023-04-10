@@ -12,6 +12,7 @@ import lombok.Setter;
 public class Person {
 
     private int sex;
+
     private String name;
 
 }

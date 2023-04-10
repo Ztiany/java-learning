@@ -6,7 +6,7 @@ public class UseCodeAutogenerate {
     public final void message() {
 
 //test()
-//@com.ztiany.annotation.Code(date=2017-02-16 00:15, author=ztiany)
+//@com.ztiany.annotation.Code(date="2017-02-16 00:15", author="ztiany")
 
         System.out.println("author:ztiany");
 

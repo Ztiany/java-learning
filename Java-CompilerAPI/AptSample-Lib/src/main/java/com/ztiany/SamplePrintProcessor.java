@@ -21,13 +21,14 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 /**
- * APT API 测试
+ * 演示 AbstractProcessor 的 API 使用。
+ *
  * <pre>
- *  方法的调用顺序
- *          init
- *          getSupportedSourceVersion
- *          getSupportedAnnotationTypes
- *          process
+ *  方法的调用顺序：
+ *      init
+ *      getSupportedSourceVersion
+ *      getSupportedAnnotationTypes
+ *      process
  * </pre>
  *
  * @author Ztiany
@@ -39,14 +40,14 @@ public class SamplePrintProcessor extends AbstractProcessor {
     private Messager mMessager;
 
     /**
-     * 该方法有注解处理器自动调用，其中ProcessingEnvironment类提供了很多有用的工具类：Filter，Types，Elements，Messager等
+     * 该方法有注解处理器自动调用，其中 ProcessingEnvironment 类提供了很多有用的工具类：Filter，Types，Elements，Messager 等。
      */
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         Elements elementUtils = processingEnv.getElementUtils();//Elements中包含用于操作Element的工具方法
         Filer filer = processingEnv.getFiler();//Filter用来创建新的源文件，class文件以及辅助文件
         Locale locale = processingEnv.getLocale();
-        //Messager用来报告错误，警告和其他提示信息
+        //Messager 用来报告错误，警告和其他提示信息
         mMessager = processingEnv.getMessager();
         Map<String, String> options = processingEnv.getOptions();
         SourceVersion sourceVersion = processingEnv.getSourceVersion();
@@ -65,7 +66,7 @@ public class SamplePrintProcessor extends AbstractProcessor {
     }
 
     /**
-     * 该方法用来指定支持的java版本，一般来说我们都是支持到最新版本，因此直接返回SourceVersion.latestSupported(）即可
+     * 该方法用来指定支持的 java 版本，一般来说我们都是支持到最新版本，因此直接返回 SourceVersion.latestSupported() 即可
      */
     @Override
     public SourceVersion getSupportedSourceVersion() {
@@ -75,7 +76,7 @@ public class SamplePrintProcessor extends AbstractProcessor {
 
     /**
      * 该方法是注解处理器处理注解的主要地方，我们需要在这里写扫描和处理注解的代码，
-     * 以及最终生成的java文件。其中需要深入的是RoundEnvironment类，该用于查找出程序元素上使用的注解
+     * 以及最终生成的 java 文件。其中需要深入的是 RoundEnvironment 类，该用于查找出程序元素上使用的注解
      */
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -88,4 +89,5 @@ public class SamplePrintProcessor extends AbstractProcessor {
 
         return true;
     }
+
 }

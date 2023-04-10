@@ -27,7 +27,9 @@ import javax.tools.JavaFileObject;
 public class CodeProcessor extends AbstractProcessor {
 
     private Messager mMessager;
+
     private Filer mFiler;
+
     private static final String SUFFIX = "Autogenerate";
 
     @Override
@@ -46,13 +48,14 @@ public class CodeProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
         System.out.println("annotations = " + annotations);//annotations - 处理请求的注释类型
-        //roundEnv - 有关当前和之前的信息环境, getElementsAnnotatedWith获取含有注解的类型
+        //roundEnv - 有关当前和之前的信息环境, getElementsAnnotatedWith 获取含有注解的类型
         System.out.println("getElementsAnnotatedWith = " + roundEnv.getElementsAnnotatedWith(Code.class));
 
         for (Element element : roundEnv.getElementsAnnotatedWith(Code.class)) {
 
             Code code = element.getAnnotation(Code.class);
-            TypeElement clazz = (TypeElement) element.getEnclosingElement();//获取封装它的类型，其上一级别，比如方法的封装类型就是类或者接口
+            //获取封装它的类型，其上一级别，比如方法的封装类型就是类或者接口
+            TypeElement clazz = (TypeElement) element.getEnclosingElement();
             try {
                 generateCode(element, code, clazz);
             } catch (IOException x) {

@@ -10,6 +10,7 @@ import me.ztiany.ast.processor.Data;
 public class User {
 
     private int age;
+
     private String name;
 
 }
