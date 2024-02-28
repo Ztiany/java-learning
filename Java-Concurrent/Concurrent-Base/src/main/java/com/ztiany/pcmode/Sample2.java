@@ -1,4 +1,4 @@
-package com.ztiany.producer_consumer;
+package com.ztiany.pcmode;
 
 import java.util.concurrent.locks.*;
 
@@ -82,6 +82,11 @@ class Consumer implements Runnable {
     }
 }
 
+/**
+ * 消费者生产者模型。
+ *
+ * @author Ztiany
+ */
 public class Sample2 {
 
     public static void main(String[] args) {
@@ -93,6 +98,7 @@ public class Sample2 {
         Thread t1 = new Thread(pro);
         Thread t2 = new Thread(con);
         Thread t3 = new Thread(con);
+
         t0.start();
         t1.start();
         t2.start();

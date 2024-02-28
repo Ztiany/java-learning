@@ -1,9 +1,9 @@
-package com.ztiany.producer_consumer;
+package com.ztiany.pcmode;
 
 /**
+ * 消费者生产者模型。
+ *
  * @author Ztiany
- * Email ztiany3@gmail.com
- * Date 18.3.18 0:02
  */
 public class Sample1 {
 
@@ -65,4 +65,3 @@ public class Sample1 {
     }
 
 }
-

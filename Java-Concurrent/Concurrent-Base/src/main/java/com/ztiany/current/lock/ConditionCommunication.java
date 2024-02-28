@@ -17,6 +17,11 @@ public class ConditionCommunication {
                 new Runnable() {
                     @Override
                     public void run() {
+                        try {
+                            Thread.sleep(5);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                         for (int i = 1; i <= 50; i++) {
                             business.sub(i);
                         }

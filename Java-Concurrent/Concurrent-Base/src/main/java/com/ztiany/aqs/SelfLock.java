@@ -6,7 +6,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 /**
- * 类说明：实现我们自己独占锁,不可重入
+ * 类说明：实现我们自己独占锁，不可重入。
  */
 public class SelfLock implements Lock {
 
