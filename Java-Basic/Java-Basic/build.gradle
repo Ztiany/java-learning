@@ -5,3 +5,7 @@ dependencies{
     //https://openjdk.java.net/projects/code-tools/jol/
     implementation 'org.openjdk.jol:jol-core:0.16'
 }
+
+repositories {
+    mavenCentral()
+}
