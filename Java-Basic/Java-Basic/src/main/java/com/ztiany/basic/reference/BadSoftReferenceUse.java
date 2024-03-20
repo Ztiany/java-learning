@@ -6,8 +6,6 @@ import java.util.Set;
 
 /**
  * @author Ztiany
- * Email ztiany3@gmail.com
- * Date 2020/5/26 17:40
  */
 public class BadSoftReferenceUse {
 
@@ -25,7 +23,9 @@ public class BadSoftReferenceUse {
      */
     public static Set<SoftReference<MyBigObj>> cache = new HashSet<>();
 
-    /** -Xms4M -Xmx4M -Xmn2M */
+    /**
+     * -Xms4M -Xmx4M -Xmn2M
+     */
     public static void main(String... args) {
         for (int i = 0; i < CACHE_INITIAL_CAPACITY; i++) {
             MyBigObj obj = new MyBigObj();

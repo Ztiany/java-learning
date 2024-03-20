@@ -8,8 +8,6 @@ import java.util.Set;
 
 /**
  * @author Ztiany
- * Email ztiany3@gmail.com
- * Date 2020/5/26 17:40
  */
 public class GoodSoftReferenceUse {
 
@@ -31,7 +29,9 @@ public class GoodSoftReferenceUse {
 
     public static int removedReferenceCount = 0;
 
-    /** -Xms4M -Xmx4M -Xmn2M */
+    /**
+     * -Xms4M -Xmx4M -Xmn2M
+     */
     public static void main(String... args) {
         for (int i = 0; i < CACHE_INITIAL_CAPACITY; i++) {
             MyBigObj obj = new MyBigObj();

@@ -6,8 +6,6 @@ import java.lang.ref.ReferenceQueue;
 
 /**
  * @author Ztiany
- * Email ztiany3@gmail.com
- * Date 18.6.27 0:15
  */
 public class PhantomReferenceTest {
 

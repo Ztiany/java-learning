@@ -8,11 +8,10 @@ import java.util.Map;
 
 /**
  * @author ztiany
- * Email: ztiany3@gmail.com
  */
 public class ReferenceQueueMain {
 
-    private static ReferenceQueue<byte[]> rq = new ReferenceQueue<>();
+    private static final ReferenceQueue<byte[]> rq = new ReferenceQueue<>();
     private static final int _1M = 1024 * 1024;
 
     public static void main(String... args) {
@@ -51,6 +50,5 @@ public class ReferenceQueueMain {
         thread.setDaemon(true);
         thread.start();
     }
-
 
 }
