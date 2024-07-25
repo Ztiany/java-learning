@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 模拟浏览器文件上传：http://blog.csdn.net/lmj623565791/article/details/23781773，博客中代码有点问题，多写了一个空行。
+ * 模拟浏览器文件上传：<<a href="http://blog.csdn.net/lmj623565791/article/details/23781773">.参考文章</a>>。注意：博客中代码有点问题，多写了一个空行。
  *
  * @author Ztiany
  * Date : 2016-12-03 22:11
@@ -30,8 +30,8 @@ public class FileUploadSample {
         params.put("username", "123");
 
         Map<String, File> files = new HashMap<>();
-        files.put("file1", new File("files/1.jpg"));
-        files.put("file2", new File("files/2.jpg"));
+        files.put("file1", new File("files/img-01.jpg"));
+        files.put("file2", new File("files/img-02.jpg"));
 
         fileUploadEx.uploadForm(params, files);
     }

@@ -8,13 +8,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * <pre>
- *          代理
- * </pre>
+ * 动态代理。
  *
  * @author Ztiany
- *         Date : 2017-02-18 21:49
- *         Email: ztiany3@gmail.com
+ * Date : 2017-02-18 21:49
+ * Email: ztiany3@gmail.com
  */
 public class ProxySample {
 
@@ -26,6 +24,7 @@ public class ProxySample {
         for (Constructor constructor : clazzProxy.getConstructors()) {
             System.out.println(constructor.getName());
         }
+
         for (Method method : clazzProxy.getMethods()) {
             System.out.println(method.getName());
         }
@@ -37,7 +36,7 @@ public class ProxySample {
         List proxy = (List) getProxy(list, new Advice() {
             @Override
             public void beforeMethod(Method method) {
-                System.out.println("call before "+method.getName());
+                System.out.println("call before " + method.getName());
             }
 
             @Override
@@ -47,6 +46,8 @@ public class ProxySample {
         });
 
         proxy.add(1);
+        proxy.clear();
+
         System.out.println(proxy.hashCode());
         System.out.println(list.size());
         System.out.println(proxy.getClass());
@@ -56,17 +57,26 @@ public class ProxySample {
         return Proxy.newProxyInstance(
                 target.getClass().getClassLoader(),
                 target.getClass().getInterfaces(),
-                (arg, arg1, arg2) -> {
-                    advice.beforeMethod(arg1);
-                    Object retVal = arg1.invoke(target, arg2);
-                    advice.afterMethod(arg1);
+                (proxy, method, arguments) -> {
+                    advice.beforeMethod(method);
+
+                    // 无返回值的方法，在代理里返回对象不会崩溃。
+                    if(method.getName().equals("clear")) {
+                        return "AAA";
+                    }
+
+                    Object retVal = method.invoke(target, arguments);
+                    advice.afterMethod(method);
                     return retVal;
                 });
     }
 
     interface Advice {
 
-        void beforeMethod(Method method);//方法一般接收三个参数  target method args
+        /**
+         * 方法一般接收三个参数  target method args。
+         */
+        void beforeMethod(Method method);
 
         void afterMethod(Method method);
 
