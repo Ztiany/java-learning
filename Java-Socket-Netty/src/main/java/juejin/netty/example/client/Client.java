@@ -23,6 +23,7 @@ public class Client {
     private void start() {
         // 创建事件循环
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
+
         // 创建启动器
         Bootstrap bootstrap = new Bootstrap();
 
@@ -41,8 +42,9 @@ public class Client {
 
         /*
         attr() 方法可以给客户端 Channel，也就是 NioSocketChannel 绑定自定义属性，然后我们可以通过 channel.attr() 取出这个属性，
-        下面码我们指定我们客户端 Channel 的一个 clientName 属性，属性值为 nettyClient，其实说白了就是给 NioSocketChannel 维护一个 map 而已，
-        后续在这个 NioSocketChannel 通过参数传来传去的时候，就可以通过他来取出设置的属性，非常方便。
+
+        下面我们指定我们客户端 Channel 的一个 clientName 属性，属性值为 nettyClient，其实说白了就是给 NioSocketChannel 维护一个 map 而已，
+        后续在这个 NioSocketChannel 通过参数传来传去的时候，就可以通过它来取出设置的属性，非常方便。
          */
         bootstrap.attr(AttributeKey.newInstance("clientName"), "nettyClient");
         // option() 方法可以给连接设置一些 TCP 底层相关的属性
@@ -64,23 +66,27 @@ public class Client {
      */
     private void doConnect(Bootstrap bootstrap, int retry) {
         // 4.建立连接
-        bootstrap.connect("127.0.0.1", 8088).addListener(future -> {
-            if (future.isSuccess()) {
-                System.out.println("连接成功!");
-            } else if (retry == 0) {
-                System.err.println("重试次数已用完，放弃连接！");
-            } else {
-                // 第几次重连
-                int order = (MAX_RETRY - retry) + 1;
-                // 本次重连的间隔
-                int delay = 1 << order;
-                System.err.println(new Date() + ": 连接失败，第" + order + "次重连……");
+        bootstrap
+                .connect("127.0.0.1", 8088)
+                // Adds the specified listener to this future. The specified listener is notified when this future is done.
+                // If this future is already completed, the specified listener is notified immediately.
+                .addListener(future -> {
+                    if (future.isSuccess()) {
+                        System.out.println("连接成功!");
+                    } else if (retry == 0) {
+                        System.err.println("重试次数已用完，放弃连接！");
+                    } else {
+                        // 第几次重连
+                        int order = (MAX_RETRY - retry) + 1;
+                        // 本次重连的间隔
+                        int delay = 1 << order;
+                        System.err.println(new Date() + ": 连接失败，第" + order + "次重连……");
                 /*
                     定时任务是调用 bootstrap.config().group().schedule(), 其中 bootstrap.config() 这个方法返回的是 BootstrapConfig，其是对 Bootstrap 配置参数的抽象，
                     然后 bootstrap.config().group() 返回的就是我们在一开始的时候配置的线程模型 workerGroup，调 workerGroup 的 schedule 方法即可实现定时任务逻辑。
                  */
-                bootstrap.config().group().schedule(() -> doConnect(bootstrap, retry - 1), delay, TimeUnit.SECONDS);
-            }
-        });
+                        bootstrap.config().group().schedule(() -> doConnect(bootstrap, retry - 1), delay, TimeUnit.SECONDS);
+                    }
+                });
     }
 }

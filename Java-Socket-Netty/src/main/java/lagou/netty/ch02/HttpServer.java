@@ -38,11 +38,10 @@ public class HttpServer {
                         @Override
                         protected void initChannel(@NotNull SocketChannel ch) throws Exception {
                             ch.pipeline()
-                                    .addLast("codec", new HttpServerCodec())                  // HTTP 编解码
-                                    .addLast("compressor", new HttpContentCompressor())       // HttpContent 压缩
-                                    .addLast("aggregator", new HttpObjectAggregator(65536))   // HTTP 消息聚合
-                                    .addLast("handler", new HttpServerHandler());             // 自定义业务逻辑处理器
-
+                                    .addLast("codec", new HttpServerCodec())                  // HTTP 编解码（ChannelDuplexHandler）
+                                    .addLast("compressor", new HttpContentCompressor())       // HttpContent 压缩（ChannelDuplexHandler）
+                                    .addLast("aggregator", new HttpObjectAggregator(65536))   // HTTP 消息聚合（ChannelInboundHandler）
+                                    .addLast("handler", new HttpServerHandler());             // 自定义业务逻辑处理器（ChannelInboundHandler）
                         }
                     })
                     .childOption(ChannelOption.SO_KEEPALIVE, true);

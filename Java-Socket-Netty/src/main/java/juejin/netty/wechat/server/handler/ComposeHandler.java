@@ -18,6 +18,7 @@ public class ComposeHandler extends SimpleChannelInboundHandler<Packet> {
     private final Map<Byte, SimpleChannelInboundHandler<? extends Packet>> handlerMap = new HashMap<>();
 
     private ComposeHandler() {
+        // TODO: 这些 Handler 都没有必要继承 SimpleChannelInboundHandler。
         handlerMap.put(Command.MESSAGE_REQUEST, MessageRequestHandler.INSTANCE);
         handlerMap.put(Command.CREATE_GROUP_REQUEST, CreateGroupRequestHandler.INSTANCE);
         handlerMap.put(Command.JOIN_GROUP_REQUEST, JoinGroupRequestHandler.INSTANCE);

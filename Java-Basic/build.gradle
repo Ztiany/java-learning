@@ -6,9 +6,9 @@ subprojects {
 
     sourceCompatibility = 1.8
 
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
         options.compilerArgs << '-Xlint:unchecked'
-        //Gradle 编译 JAVA 文件时采用 UTF-8
+        // Gradle 编译 JAVA 文件时采用 UTF-8
         options.encoding = "UTF-8"
     }
 

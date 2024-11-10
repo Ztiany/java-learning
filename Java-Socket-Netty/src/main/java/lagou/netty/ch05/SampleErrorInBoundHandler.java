@@ -16,7 +16,6 @@ public class SampleErrorInBoundHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-
     public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object msg) throws Exception {
         System.out.println("InBoundHandler: " + name);
 
