@@ -13,10 +13,6 @@ import java.util.Set;
 
 /**
  * 获取两个类的共同超类。
- *
- * @author Ztiany
- * Email ztiany3@gmail.com
- * Date 2020/6/2 15:37
  */
 public class ParserClassParent {
 
@@ -45,7 +41,7 @@ public class ParserClassParent {
 
         public static final String TAG = "ExtendClassWriter";
         private static final String OBJECT = "java/lang/Object";
-        private ClassLoader urlClassLoader;
+        private final ClassLoader urlClassLoader;
 
         public ExtendClassWriter(ClassLoader urlClassLoader, int flags) {
             super(flags);

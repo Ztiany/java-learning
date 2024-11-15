@@ -1,4 +1,4 @@
-rootProject.name = 'ASM-Base'
+rootProject.name = 'JavaByte-ASM'
 
 //agent api
 include 'JavaAgentLib'
@@ -7,4 +7,3 @@ include 'JavaAgentTest'
 //asm
 include 'AsmAgent'
 include 'AsmAgent-Main'
-

@@ -13,10 +13,22 @@ import java.io.PrintWriter;
 public class TraceClassVisitorSample {
 
     public static void main(String[] args) throws IOException {
+        parse(Runnable.class.getName());
+        parse(ClassWithLambda.class.getName());
+        parse(ClassWithCheckedLambda.class.getName());
+        parse(ViewClick.class.getName());
+        parse(ViewClickChecked.class.getName());
+        parse(ViewClickWith1PChecked.class.getName());
+        parse(ViewClickWith2PChecked.class.getName());
+    }
+
+    private static void parse(String className) throws IOException {
+        System.err.println("----------------------------------------------------------");
+        System.err.println("----------------------------------------------------------");
         ClassWriter cw = new ClassWriter(0);
-        PrintWriter printWriter = new PrintWriter(System.out);
+        PrintWriter printWriter = new PrintWriter(System.err);
         TraceClassVisitor cv = new TraceClassVisitor(cw, printWriter);
-        new ClassReader(Runnable.class.getName()).accept(cv, 0);
+        new ClassReader(className).accept(cv, 0);
     }
 
 }

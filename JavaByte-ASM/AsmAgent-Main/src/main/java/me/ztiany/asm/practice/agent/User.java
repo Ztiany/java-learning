@@ -2,7 +2,6 @@ package me.ztiany.asm.practice.agent;
 
 /**
  * @author ztiany
- * Email: ztiany3@gmail.com
  */
 public class User {
 

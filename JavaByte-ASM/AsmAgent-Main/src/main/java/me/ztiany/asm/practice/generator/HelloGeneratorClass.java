@@ -6,19 +6,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 /**
- * 通过ASM生成类的字节码：https://blog.csdn.net/catoop/article/details/50629921
- *
- * @author Administrator
+ * 参考：<a href="https://blog.csdn.net/catoop/article/details/50629921">通过 ASM 生成类的字节码</a>。
  */
 public class HelloGeneratorClass implements Opcodes {
 
     /**
-     * 生成保存class文件
+     * 生成保存 class 文件
      */
     public static void main(String[] args) {
         try {
             byte[] data = generatorHelloClass();
-            File file = new File("Hello.class");
+            File file = new File("ASM-Generated/Hello.class");
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(data);
             fos.close();
@@ -27,10 +25,9 @@ public class HelloGeneratorClass implements Opcodes {
         }
     }
 
-
     /**
-     * 使用构造Hello类class字节码，package中的Hello.java只是代码原型，
-     * 本例中只供对比用，没有实际使用到这个类。ASM代码生成工具使用 bytecode
+     * 使用构造 Hello 类 class 字节码，package 中的 Hello.java 只是代码原型，
+     * 本例中只供对比用，没有实际使用到这个类。ASM 代码生成工具使用 bytecode。
      */
     private static byte[] generatorHelloClass() {
 

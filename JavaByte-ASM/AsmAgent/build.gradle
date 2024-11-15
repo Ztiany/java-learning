@@ -10,12 +10,12 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'commons-io:commons-io:2.11.0'
-    compile 'org.ow2.asm:asm:9.2'
-    compile 'org.ow2.asm:asm-commons:9.2'
-    compile 'com.squareup.okio:okio:3.0.0'
-    compile 'com.google.code.gson:gson:2.9.0'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.ow2.asm:asm:9.2'
+    implementation 'org.ow2.asm:asm-commons:9.2'
+    implementation 'com.squareup.okio:okio:3.0.0'
+    implementation 'com.google.code.gson:gson:2.9.0'
 }
 
 jar {
